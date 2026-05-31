@@ -34,13 +34,26 @@ GitHub CLIもインストール済み。
 gh version 2.93.0
 ```
 
-ただし、GitHubログインはまだ。
+GitHubログイン済み。
 
 ```text
-You are not logged into any GitHub hosts.
+github.com account HikaVn
 ```
 
-そのため、GitHubへのpushはまだ完了していない。
+GitHubリポジトリ作成・push済み。
+
+```text
+https://github.com/HikaVn/bloom-video-editor
+```
+
+リポジトリ設定:
+
+```text
+owner/repo: HikaVn/bloom-video-editor
+visibility: PRIVATE
+default branch: main
+remote: origin
+```
 
 ## GitHubへ移行する次の手順
 
@@ -52,24 +65,29 @@ You are not logged into any GitHub hosts.
 gh auth login
 ```
 
-このリポジトリをGitHubに作成してpushする例:
+このリポジトリはすでにGitHubへpush済み。
+
+別端末で取得する:
 
 ```powershell
-cd C:\Users\hikav\Documents\Codex\2026-05-31\win-mac-iphone
-gh repo create bloom-video-editor --private --source . --remote origin --push
+git clone https://github.com/HikaVn/bloom-video-editor.git
+cd bloom-video-editor
 ```
 
-公開リポジトリにする場合:
+今後の通常運用:
 
 ```powershell
-gh repo create bloom-video-editor --public --source . --remote origin --push
+git pull
+git add .
+git commit -m "変更内容"
+git push
 ```
 
-すでにGitHub側で空リポジトリを作っている場合:
+ローカルの接続確認:
 
 ```powershell
-git remote add origin https://github.com/<user>/<repo>.git
-git push -u origin main
+git remote -v
+git status
 ```
 
 ## 主なファイル
@@ -242,12 +260,11 @@ cd <repo>
 
 ## 次にやるとよさそうなこと
 
-1. GitHubにログインしてpushする
-2. `index.html` を小さなファイルに分割するか検討する
-3. ホーム/編集/エフェクト画面の情報設計を整理する
-4. 「ここまで覚える」を現在のBloom風UIへ再統合する
-5. ビューティー機能一覧を優先度順に並べる
-6. スマホ実装技術を決める
+1. `index.html` を小さなファイルに分割するか検討する
+2. ホーム/編集/エフェクト画面の情報設計を整理する
+3. 「ここまで覚える」を現在のBloom風UIへ再統合する
+4. ビューティー機能一覧を優先度順に並べる
+5. スマホ実装技術を決める
 
 技術候補:
 
@@ -258,12 +275,12 @@ cd <repo>
 
 ## 現時点の結論
 
-GitHub移行は、ローカル準備とGitHub CLIインストールまで完了。
+GitHub移行は完了。
 
-未完了:
+完了:
 
 - GitHubログイン
 - GitHubリポジトリ作成
 - `main` ブランチのpush
 
-このプロジェクトは、今後のUI設計を進めるためのベースとして継続可能な状態。
+このプロジェクトは、複数端末からclone/pull/pushして継続開発できる状態。
