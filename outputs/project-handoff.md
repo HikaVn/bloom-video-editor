@@ -50,10 +50,12 @@ https://github.com/HikaVn/bloom-video-editor
 
 ```text
 owner/repo: HikaVn/bloom-video-editor
-visibility: PRIVATE
+visibility: PUBLIC
 default branch: main
 remote: origin
 ```
+
+2026-05-31 追記: Codex GitHub App からもリポジトリ接続を確認済み。現在の環境では GitHub CLI は PATH 上にないが、clone/pull/push は通常の `git` で作業可能。
 
 ## GitHubへ移行する次の手順
 
@@ -260,9 +262,9 @@ cd <repo>
 
 ## 次にやるとよさそうなこと
 
-1. `index.html` を小さなファイルに分割するか検討する
-2. ホーム/編集/エフェクト画面の情報設計を整理する
-3. 「ここまで覚える」を現在のBloom風UIへ再統合する
+1. ホーム/編集/エフェクト画面の情報設計を整理する
+2. 「最近の操作」を「ここまで覚える」機能へ拡張する
+3. 操作履歴・プリセットを保存できるデータ構造を決める
 4. ビューティー機能一覧を優先度順に並べる
 5. スマホ実装技術を決める
 
@@ -282,5 +284,7 @@ GitHub移行は完了。
 - GitHubログイン
 - GitHubリポジトリ作成
 - `main` ブランチのpush
+- UIプロトタイプを `index.html` / `styles.css` / `app.js` に分割
+- 編集画面に「最近の操作」パネルを追加
 
 このプロジェクトは、複数端末からclone/pull/pushして継続開発できる状態。
