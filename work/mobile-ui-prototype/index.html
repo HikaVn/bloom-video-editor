@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bloom Video Editor - UI Mock</title>
+  <style>
+    :root {
+      --ink: #2d2730;
+      --muted: #8f7f86;
+      --pink: #ff8fa6;
+      --pink-deep: #f46b92;
+      --pink-soft: #fff0f3;
+      --peach: #ffe2d5;
+      --line: rgba(238, 197, 196, 0.72);
+      --card: rgba(255, 255, 255, 0.82);
+      --shadow: 0 26px 60px rgba(207, 126, 111, 0.22);
+      --radius: 28px;
+      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 14%, rgba(255, 255, 255, 0.92) 0 8%, transparent 23%),
+        radial-gradient(circle at 83% 82%, rgba(255, 255, 255, 0.88) 0 7%, transparent 23%),
+        linear-gradient(135deg, #fff7f4 0%, #ffe8dd 45%, #fff6f2 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: auto -12% -20% -12%;
+      height: 42vh;
+      background:
+        radial-gradient(circle at 15% 35%, rgba(255, 172, 190, 0.18) 0 9%, transparent 18%),
+        radial-gradient(circle at 72% 30%, rgba(255, 171, 151, 0.16) 0 10%, transparent 20%);
+      filter: blur(18px);
+      pointer-events: none;
+    }
+
+    button {
+      font: inherit;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .stage {
+      width: min(540px, 100%);
+      margin: 0 auto;
+      padding: 38px 32px 30px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      align-items: start;
+      justify-items: center;
+    }
+
+    .view-switcher {
+      width: min(430px, calc(100vw - 40px));
+      padding: 6px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(237, 209, 205, 0.9);
+      box-shadow: 0 12px 30px rgba(207, 126, 111, 0.12);
+      backdrop-filter: blur(10px);
+    }
+
+    .view-switcher button {
+      min-height: 38px;
+      border-radius: 999px;
+      color: #8d7b82;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .view-switcher button.active {
+      color: #fff;
+      background: linear-gradient(135deg, #ff899f 0%, #f57bb3 100%);
+      box-shadow: 0 8px 18px rgba(245, 117, 141, 0.22);
+    }
+
+    .phone {
+      position: relative;
+      display: none;
+      width: min(430px, calc(100vw - 40px));
+      min-height: 880px;
+      border-radius: 64px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.68);
+      border: 4px solid rgba(255, 255, 255, 0.92);
+      box-shadow: var(--shadow), inset 0 0 0 2px rgba(247, 199, 190, 0.44);
+    }
+
+    .phone.active {
+      display: block;
+    }
+
+    .phone-inner {
+      min-height: 840px;
+      overflow: hidden;
+      border-radius: 48px;
+      background:
+        radial-gradient(circle at 13% 2%, rgba(255, 228, 237, 0.75), transparent 32%),
+        radial-gradient(circle at 90% 0%, rgba(255, 246, 248, 0.96), transparent 26%),
+        #fffaf8;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      position: relative;
+    }
+
+    .phone.dark {
+      background: #161417;
+      border-color: rgba(255, 255, 255, 0.86);
+    }
+
+    .phone.dark .phone-inner {
+      color: #fff;
+      background:
+        radial-gradient(circle at 20% 4%, rgba(255, 255, 255, 0.08), transparent 24%),
+        linear-gradient(180deg, #171719 0%, #101011 100%);
+    }
+
+    .status {
+      height: 54px;
+      padding: 17px 24px 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .signal {
+      width: 18px;
+      height: 12px;
+      background: linear-gradient(90deg, #111 20%, transparent 20% 30%, #111 30% 50%, transparent 50% 60%, #111 60% 80%, transparent 80%);
+      border-radius: 2px;
+    }
+
+    .battery {
+      width: 23px;
+      height: 11px;
+      border: 2px solid currentColor;
+      border-radius: 3px;
+      position: relative;
+    }
+
+    .battery::before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 2px;
+      width: 12px;
+      height: 3px;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .battery::after {
+      content: "";
+      position: absolute;
+      right: -5px;
+      top: 2px;
+      width: 3px;
+      height: 5px;
+      border-radius: 0 2px 2px 0;
+      background: currentColor;
+    }
+
+    .screen {
+      padding: 10px 22px 12px;
+    }
+
+    .home-top {
+      display: grid;
+      grid-template-columns: 32px 1fr 46px;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .menu-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--ink);
+      font-size: 23px;
+      line-height: 1;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 28%, #f2c9b7 0 18%, transparent 20%),
+        radial-gradient(circle at 47% 44%, #5a342f 0 24%, transparent 25%),
+        linear-gradient(135deg, #f7d2c9, #f2b9c6);
+      border: 3px solid #fff;
+      box-shadow: 0 6px 16px rgba(186, 111, 102, 0.22);
+      justify-self: end;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    .greeting h1 {
+      font-size: 22px;
+      letter-spacing: 0;
+      line-height: 1.35;
+      margin: 0 0 4px;
+    }
+
+    .greeting p,
+    .subtext {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      font-weight: 600;
+    }
+
+    .create-card {
+      margin: 18px 0 26px;
+      border-radius: 18px;
+      min-height: 88px;
+      padding: 18px 18px 18px 20px;
+      color: #fff;
+      display: grid;
+      grid-template-columns: 50px 1fr 30px;
+      gap: 12px;
+      align-items: center;
+      background: linear-gradient(135deg, #ff899f 0%, #ffa4b1 100%);
+      box-shadow: 0 20px 34px rgba(245, 117, 141, 0.25);
+    }
+
+    .create-plus {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 32px;
+      font-weight: 300;
+      background: #fff;
+      color: var(--pink);
+    }
+
+    .create-card strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 4px;
+    }
+
+    .create-card span {
+      display: block;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-head h2 {
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    .see-all {
+      color: var(--muted);
+      background: transparent;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .project-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .project-card {
+      border-radius: 12px;
+      background: #fff;
+      overflow: hidden;
+      border: 1px solid rgba(235, 218, 214, 0.9);
+      box-shadow: 0 10px 20px rgba(159, 111, 104, 0.08);
+    }
+
+    .thumb {
+      height: 88px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .thumb::after,
+    .editor-photo::after,
+    .filter-img::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 42%, rgba(0, 0, 0, 0.28));
+    }
+
+    .flower-photo {
+      background:
+        radial-gradient(circle at 72% 48%, #ffd9e5 0 7%, transparent 8%),
+        radial-gradient(circle at 78% 54%, #ffd9e5 0 8%, transparent 9%),
+        radial-gradient(circle at 65% 56%, #ffe7ee 0 8%, transparent 9%),
+        radial-gradient(circle at 44% 36%, #edc3ae 0 10%, transparent 11%),
+        radial-gradient(circle at 42% 52%, #49312c 0 17%, transparent 18%),
+        linear-gradient(135deg, #f3d1be, #fff0e6 48%, #d2e4ec);
+    }
+
+    .sea-photo {
+      background:
+        radial-gradient(circle at 62% 24%, #fff 0 5%, transparent 6%),
+        linear-gradient(150deg, #a8d1e5 0 40%, #f5eadf 40% 52%, #4b8aa8 52% 100%);
+    }
+
+    .cafe-photo {
+      background:
+        radial-gradient(circle at 56% 38%, #4b3026 0 11%, transparent 12%),
+        radial-gradient(circle at 60% 35%, #f4efe8 0 15%, transparent 16%),
+        linear-gradient(135deg, #eee3d4, #c6aa91);
+    }
+
+    .duration {
+      position: absolute;
+      left: 6px;
+      bottom: 5px;
+      color: #fff;
+      z-index: 1;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.48);
+    }
+
+    .project-card .meta {
+      padding: 7px;
+      display: grid;
+      gap: 3px;
+    }
+
+    .project-card strong {
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .project-card span {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .template-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .template-item,
+    .tool-item {
+      display: grid;
+      justify-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .template-icon,
+    .tool-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      color: #c96578;
+      font-size: 25px;
+      background: linear-gradient(145deg, #fff7f8, #f9e1e9);
+      border: 1px solid rgba(236, 205, 209, 0.9);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .template-item span,
+    .tool-item span {
+      font-size: 11px;
+      font-weight: 700;
+      color: #67585e;
+      white-space: nowrap;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .tool-icon {
+      width: 76px;
+      max-width: 100%;
+      background: #fff4f1;
+    }
+
+    .phone-nav {
+      height: 74px;
+      margin: 0 8px 12px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(237, 209, 205, 0.9);
+      box-shadow: 0 -12px 24px rgba(176, 129, 120, 0.1);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: center;
+      padding: 7px 10px;
+    }
+
+    .nav-item {
+      display: grid;
+      justify-items: center;
+      gap: 3px;
+      color: #87777d;
+      background: transparent;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .nav-item.active {
+      color: var(--pink-deep);
+    }
+
+    .nav-ico {
+      width: 31px;
+      height: 31px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      font-size: 20px;
+    }
+
+    .nav-item.active .nav-ico {
+      background: #ffedf1;
+    }
+
+    .editor-header {
+      height: 64px;
+      padding: 14px 18px;
+      display: grid;
+      grid-template-columns: 52px 1fr auto auto;
+      align-items: center;
+      gap: 14px;
+      font-size: 12px;
+    }
+
+    .editor-title {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .help-btn {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      color: #fff;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .export {
+      padding: 10px 17px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #ff8397, #ef79c0);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .editor-body {
+      padding: 2px 18px 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .editor-photo {
+      min-height: 354px;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      background:
+        radial-gradient(circle at 68% 45%, #ffdce6 0 7%, transparent 8%),
+        radial-gradient(circle at 74% 48%, #ffe8ef 0 8%, transparent 9%),
+        radial-gradient(circle at 78% 42%, #ffd5e2 0 7%, transparent 8%),
+        radial-gradient(circle at 45% 24%, #e8b6a5 0 11%, transparent 12%),
+        radial-gradient(circle at 45% 42%, #643b32 0 19%, transparent 20%),
+        linear-gradient(135deg, #ffe5d7, #fff7ef 45%, #d8e1e5 46%, #f0e5d8);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.36);
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #fff3c5;
+      box-shadow: 0 0 12px #fff;
+      z-index: 2;
+    }
+
+    .sparkle:nth-child(1) { left: 28px; top: 36px; }
+    .sparkle:nth-child(2) { left: 74px; top: 72px; }
+    .sparkle:nth-child(3) { left: 88px; top: 190px; }
+    .sparkle:nth-child(4) { right: 96px; top: 72px; }
+
+    .script-title {
+      position: absolute;
+      left: 26px;
+      bottom: 76px;
+      color: #fff;
+      z-index: 2;
+      font-size: 35px;
+      font-family: "Brush Script MT", "Segoe Script", cursive;
+      font-weight: 400;
+      line-height: 1;
+      text-shadow: 0 5px 18px rgba(86, 52, 39, 0.42);
+    }
+
+    .editor-caption {
+      position: absolute;
+      left: 38px;
+      bottom: 50px;
+      z-index: 2;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .editor-controls {
+      display: grid;
+      grid-template-columns: 1fr 50px 1fr;
+      align-items: center;
+      color: #d9d4d7;
+    }
+
+    .control-pair {
+      display: flex;
+      gap: 17px;
+    }
+
+    .control-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: transparent;
+      color: inherit;
+      font-size: 20px;
+    }
+
+    .play-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      color: #fff;
+      background: transparent;
+      font-size: 30px;
+      display: grid;
+      place-items: center;
+    }
+
+    .timeline-labels {
+      color: #aaa4a8;
+      font-size: 10px;
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding-top: 9px;
+    }
+
+    .tracks {
+      position: relative;
+      display: grid;
+      gap: 10px;
+      padding-bottom: 8px;
+    }
+
+    .playhead {
+      position: absolute;
+      top: -20px;
+      bottom: -8px;
+      left: 51%;
+      width: 2px;
+      background: #fff;
+      z-index: 5;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+    }
+
+    .video-track {
+      height: 55px;
+      border-radius: 10px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 3px;
+      overflow: hidden;
+      padding: 5px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .frame {
+      border-radius: 7px;
+      background: linear-gradient(135deg, #efd1c5, #87524a);
+    }
+
+    .frame:nth-child(even) {
+      background: linear-gradient(135deg, #ffe2e4, #b98a77);
+    }
+
+    .track-card {
+      height: 40px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .text-track {
+      background: #7b5bb0;
+      width: 85%;
+      margin-left: 20px;
+    }
+
+    .audio-track {
+      background: rgba(165, 78, 72, 0.72);
+      width: 100%;
+    }
+
+    .add-clip {
+      position: absolute;
+      right: 1px;
+      top: 7px;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: #ff8198;
+      color: #fff;
+      font-size: 28px;
+      z-index: 6;
+    }
+
+    .editor-tools {
+      height: 92px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      align-items: center;
+      padding: 6px 10px 0;
+    }
+
+    .editor-tool {
+      color: #f1eef0;
+      display: grid;
+      justify-items: center;
+      gap: 5px;
+      background: transparent;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .editor-tool b {
+      font-size: 24px;
+      font-weight: 400;
+    }
+
+    .catalog-tabs {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+      padding: 2px 2px 0;
+      margin-bottom: 24px;
+    }
+
+    .catalog-tab {
+      color: var(--ink);
+      background: transparent;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 10px 0 9px;
+      position: relative;
+    }
+
+    .catalog-tab.active {
+      color: var(--pink-deep);
+    }
+
+    .catalog-tab.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--pink-deep);
+    }
+
+    .search {
+      margin-left: auto;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: transparent;
+      font-size: 24px;
+      color: var(--ink);
+    }
+
+    .catalog-section {
+      margin-bottom: 25px;
+    }
+
+    .filter-row,
+    .stamp-row,
+    .title-row,
+    .grade-row {
+      display: grid;
+      gap: 12px;
+    }
+
+    .filter-row {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .filter-card,
+    .stamp-card,
+    .title-card,
+    .grade-card {
+      min-width: 0;
+      display: grid;
+      gap: 7px;
+      justify-items: center;
+      color: #64575d;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .filter-img {
+      width: 100%;
+      aspect-ratio: 1 / 1.34;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      background: linear-gradient(135deg, #f4ceb9, #e9dce9);
+      border: 1px solid rgba(229, 212, 213, 0.9);
+      box-shadow: 0 8px 14px rgba(144, 109, 107, 0.08);
+    }
+
+    .filter-card.active .filter-img {
+      outline: 3px solid #c794e3;
+      outline-offset: -3px;
+    }
+
+    .check {
+      position: absolute;
+      right: 7px;
+      top: 7px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      z-index: 3;
+      background: #f39ac5;
+      font-size: 12px;
+    }
+
+    .warm { filter: saturate(1.15) sepia(0.12); }
+    .lavender { filter: hue-rotate(24deg) saturate(0.84); }
+    .beige { filter: sepia(0.28) brightness(1.04); }
+
+    .stamp-row {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .stamp-art,
+    .title-art,
+    .grade-art {
+      width: 100%;
+      aspect-ratio: 1 / 0.76;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background: #fff4f4;
+      border: 1px solid rgba(235, 218, 214, 0.9);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      color: #f28ba2;
+      font-size: 31px;
+      line-height: 1;
+    }
+
+    .title-row {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .title-art {
+      aspect-ratio: 1 / 0.9;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.45;
+      padding: 8px;
+      background: linear-gradient(135deg, #d7b2e4, #c8a6d7);
+    }
+
+    .title-art.peach {
+      background: linear-gradient(135deg, #f8e1c7, #f5cdb0);
+      color: #8a675e;
+    }
+
+    .title-art.gray {
+      background: linear-gradient(135deg, #d8cdd5, #bdb0ba);
+    }
+
+    .title-art.pink {
+      background: linear-gradient(135deg, #e8c1cc, #d99dae);
+    }
+
+    .grade-row {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .grade-art {
+      aspect-ratio: 1 / 0.72;
+      background:
+        radial-gradient(circle at 53% 27%, #e99b43 0 9%, transparent 10%),
+        radial-gradient(circle at 55% 31%, #f7d85b 0 15%, transparent 16%),
+        linear-gradient(145deg, #96d8f5 0 50%, #a8826b 50% 100%);
+    }
+
+    .grade-card:nth-child(2) .grade-art {
+      filter: contrast(1.1) saturate(0.9) brightness(0.82);
+    }
+
+    .grade-card:nth-child(3) .grade-art {
+      filter: hue-rotate(328deg) saturate(1.2);
+    }
+
+    .grade-card:nth-child(4) .grade-art {
+      filter: saturate(1.22) brightness(1.04);
+    }
+
+    .catalog-nav {
+      height: 74px;
+      margin: 0 8px 12px;
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(237, 209, 205, 0.9);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      padding: 6px 6px;
+    }
+
+    .catalog-nav .nav-item {
+      font-size: 10px;
+    }
+
+    .brand-band {
+      width: min(1340px, calc(100% - 64px));
+      margin: 0 auto 34px;
+      display: grid;
+      grid-template-columns: 230px 1fr minmax(420px, 0.9fr);
+      gap: 34px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      display: grid;
+      gap: 6px;
+    }
+
+    .logo-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-style: italic;
+      font-size: 46px;
+      line-height: 1;
+      color: #6a5c60;
+      position: relative;
+    }
+
+    .logo-title::before {
+      content: "B";
+      position: absolute;
+      left: -14px;
+      top: -7px;
+      color: #f17f9c;
+      opacity: 0.8;
+    }
+
+    .logo span {
+      color: #9b9093;
+      font-size: 24px;
+    }
+
+    .tagline h2 {
+      font-size: 21px;
+      letter-spacing: 0.12em;
+      margin-bottom: 12px;
+    }
+
+    .tagline p {
+      color: #776a6f;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 18px;
+    }
+
+    .feature {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .feature-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 27px;
+      color: #b47a6d;
+      background: rgba(255, 255, 255, 0.68);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 8px 20px rgba(168, 113, 102, 0.12);
+    }
+
+    .feature p {
+      font-size: 12px;
+      line-height: 1.55;
+      color: #6e6367;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1180px) {
+      .stage {
+        grid-template-columns: 1fr;
+        width: min(480px, 100%);
+        padding: 26px 18px;
+      }
+
+      .phone {
+        min-height: auto;
+      }
+
+      .phone-inner {
+        min-height: 820px;
+      }
+
+      .brand-band {
+        grid-template-columns: 1fr;
+        text-align: center;
+        width: min(480px, calc(100% - 36px));
+      }
+
+      .features {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .feature {
+        grid-template-columns: 48px 1fr;
+        text-align: left;
+      }
+
+      .feature-icon {
+        width: 48px;
+        height: 48px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .stage {
+        padding: 14px 10px;
+      }
+
+      .phone {
+        border-radius: 44px;
+        padding: 10px;
+      }
+
+      .phone-inner {
+        border-radius: 34px;
+      }
+
+      .screen {
+        padding-inline: 16px;
+      }
+
+      .project-row,
+      .filter-row,
+      .stamp-row,
+      .title-row,
+      .grade-row {
+        gap: 8px;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <nav class="view-switcher" aria-label="画面切り替え">
+      <button class="active" type="button" data-view-target="home">ホーム</button>
+      <button type="button" data-view-target="editor">編集</button>
+      <button type="button" data-view-target="effects">エフェクト</button>
+    </nav>
+
+    <section class="phone active" data-view="home" aria-label="Bloom home screen">
+      <div class="phone-inner">
+        <div>
+          <div class="status">
+            <span>9:41</span>
+            <span class="status-icons"><span class="signal"></span><span>⌁</span><span class="battery"></span></span>
+          </div>
+          <div class="screen">
+            <div class="home-top">
+              <button class="menu-icon" type="button" title="メニュー">≡</button>
+              <div></div>
+              <div class="avatar" aria-hidden="true"></div>
+            </div>
+
+            <section class="greeting">
+              <h1>こんにちは、さくらさん ❀</h1>
+              <p>素敵な一日を、素敵な動画で残しましょう。</p>
+            </section>
+
+            <button class="create-card" type="button" data-view-target="editor">
+              <span class="create-plus">＋</span>
+              <span><strong>新規作成</strong><span>新しいプロジェクトを始める</span></span>
+              <span style="font-size: 30px;">›</span>
+            </button>
+
+            <section>
+              <div class="section-head">
+                <h2>マイプロジェクト</h2>
+                <button class="see-all" type="button">すべて見る ›</button>
+              </div>
+              <div class="project-row">
+                <article class="project-card">
+                  <div class="thumb flower-photo"><span class="duration">00:32</span></div>
+                  <div class="meta"><strong>お花屋さんVlog</strong><span>2024.05.12・32MB</span></div>
+                </article>
+                <article class="project-card">
+                  <div class="thumb sea-photo"><span class="duration">01:08</span></div>
+                  <div class="meta"><strong>旅行の思い出</strong><span>2024.05.08・68MB</span></div>
+                </article>
+                <article class="project-card">
+                  <div class="thumb cafe-photo"><span class="duration">00:45</span></div>
+                  <div class="meta"><strong>カフェ巡り日記</strong><span>2024.05.03・25MB</span></div>
+                </article>
+              </div>
+            </section>
+
+            <section>
+              <div class="section-head">
+                <h2>テンプレート</h2>
+                <button class="see-all" type="button">すべて見る ›</button>
+              </div>
+              <div class="template-row">
+                <div class="template-item"><div class="template-icon">▣</div><span>Vlog</span></div>
+                <div class="template-item"><div class="template-icon">✈</div><span>旅行</span></div>
+                <div class="template-item"><div class="template-icon">☕</div><span>日常</span></div>
+                <div class="template-item"><div class="template-icon">▮</div><span>美容</span></div>
+                <div class="template-item"><div class="template-icon">♕</div><span>誕生日</span></div>
+              </div>
+            </section>
+
+            <section>
+              <div class="section-head">
+                <h2>クイックツール</h2>
+              </div>
+              <div class="tool-grid">
+                <button class="tool-item" type="button"><span class="tool-icon">⌁</span><span>一括編集</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">T</span><span>自動字幕</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">✂</span><span>AIカット</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">▧</span><span>写真から動画</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">▦</span><span>コラージュ</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">♬</span><span>録音</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">□</span><span>画面比率</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">♡</span><span>素材ストア</span></button>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <nav class="phone-nav" aria-label="home navigation">
+          <button class="nav-item active" type="button" data-view-target="home"><span class="nav-ico">⌂</span><span>ホーム</span></button>
+          <button class="nav-item" type="button" data-view-target="effects"><span class="nav-ico">▦</span><span>テンプレート</span></button>
+          <button class="nav-item" type="button" data-view-target="editor"><span class="nav-ico">◎</span><span>編集</span></button>
+        </nav>
+      </div>
+    </section>
+
+    <section class="phone dark" data-view="editor" aria-label="Bloom editor screen">
+      <div class="phone-inner">
+        <div>
+          <header class="editor-header">
+            <button class="control-btn" type="button" title="閉じる" style="font-size: 12px; width: auto;" data-view-target="home">閉じる</button>
+            <div class="editor-title">プロジェクト1⌄</div>
+            <button class="help-btn" type="button" title="ヘルプ">?</button>
+            <button class="export" type="button">書き出し</button>
+          </header>
+          <div class="editor-body">
+            <section class="editor-photo">
+              <span class="sparkle"></span><span class="sparkle"></span><span class="sparkle"></span><span class="sparkle"></span>
+              <div class="script-title">Good day ♡</div>
+              <div class="editor-caption">今日もいい日だったね。</div>
+            </section>
+
+            <div class="editor-controls">
+              <div class="control-pair">
+                <button class="control-btn js-undo" type="button" title="もどす">↶</button>
+                <button class="control-btn js-redo" type="button" title="やり直す">↷</button>
+              </div>
+              <button class="play-btn js-play" type="button" title="再生">▶</button>
+              <div class="control-pair" style="justify-content: flex-end;">
+                <button class="control-btn" type="button" title="全画面">⇱</button>
+              </div>
+            </div>
+
+            <div class="timeline-labels">
+              <span>00:12 / 00:32</span><span>00:10</span><span>00:20</span><span>00:30</span>
+            </div>
+
+            <section class="tracks" aria-label="timeline">
+              <span class="playhead"></span>
+              <div class="video-track">
+                <span class="frame"></span><span class="frame"></span><span class="frame"></span>
+                <span class="frame"></span><span class="frame"></span><span class="frame"></span>
+              </div>
+              <button class="add-clip" type="button" title="追加">＋</button>
+              <div class="track-card text-track">T　Good day ♡</div>
+              <div class="track-card audio-track">♫　BGM_春の予感.mp3</div>
+            </section>
+          </div>
+        </div>
+
+        <nav class="editor-tools">
+          <button class="editor-tool" type="button"><b>✂</b><span>分割</span></button>
+          <button class="editor-tool" type="button"><b>T</b><span>テキスト</span></button>
+          <button class="editor-tool" type="button" data-view-target="effects"><b>○</b><span>フィルター</span></button>
+          <button class="editor-tool" type="button"><b>♬</b><span>音楽</span></button>
+          <button class="editor-tool" type="button" data-view-target="effects"><b>☺</b><span>スタンプ</span></button>
+          <button class="editor-tool" type="button"><b>↯</b><span>速度調整</span></button>
+        </nav>
+      </div>
+    </section>
+
+    <section class="phone" data-view="effects" aria-label="Bloom effect screen">
+      <div class="phone-inner">
+        <div>
+          <div class="status">
+            <span>9:41</span>
+            <span class="status-icons"><span class="signal"></span><span>⌁</span><span class="battery"></span></span>
+          </div>
+          <div class="screen">
+            <nav class="catalog-tabs">
+              <button class="catalog-tab active" type="button">エフェクト</button>
+              <button class="catalog-tab" type="button">フィルター</button>
+              <button class="catalog-tab" type="button">テンプレート</button>
+              <button class="search" type="button" title="検索">⌕</button>
+            </nav>
+
+            <section class="catalog-section">
+              <div class="section-head">
+                <h2>おすすめフィルター</h2>
+                <button class="see-all" type="button">すべて見る ›</button>
+              </div>
+              <div class="filter-row">
+                <div class="filter-card active"><div class="filter-img flower-photo"><span class="check">✓</span></div><span>ピュアピンク</span></div>
+                <div class="filter-card"><div class="filter-img flower-photo warm"></div><span>ウォーム</span></div>
+                <div class="filter-card"><div class="filter-img flower-photo lavender"></div><span>ラベンダー</span></div>
+                <div class="filter-card"><div class="filter-img flower-photo beige"></div><span>ミルキーベージュ</span></div>
+              </div>
+            </section>
+
+            <section class="catalog-section">
+              <div class="section-head">
+                <h2>スタンプ</h2>
+                <button class="see-all" type="button">すべて見る ›</button>
+              </div>
+              <div class="stamp-row">
+                <div class="stamp-card"><div class="stamp-art">♡</div><span>ハートフレーム</span></div>
+                <div class="stamp-card"><div class="stamp-art">✦</div><span>きらきら</span></div>
+                <div class="stamp-card"><div class="stamp-art">♡</div><span>手書きハート</span></div>
+                <div class="stamp-card"><div class="stamp-art">❀</div><span>フラワーシャワー</span></div>
+              </div>
+            </section>
+
+            <section class="catalog-section">
+              <div class="section-head">
+                <h2>タイトル</h2>
+                <button class="see-all" type="button">すべて見る ›</button>
+              </div>
+              <div class="title-row">
+                <div class="title-card"><div class="title-art">Daily Vlog<br><small>今日の出来事</small></div></div>
+                <div class="title-card"><div class="title-art peach">休日の過ごし方<br><small>vlog</small></div></div>
+                <div class="title-card"><div class="title-art gray">思い出日記<br><small>memory</small></div></div>
+                <div class="title-card"><div class="title-art pink">わたしの<br>ご褒美時間</div></div>
+              </div>
+            </section>
+
+            <section class="catalog-section">
+              <div class="section-head">
+                <h2>カラーグレーディング</h2>
+                <button class="see-all" type="button">すべて見る ›</button>
+              </div>
+              <div class="grade-row">
+                <div class="grade-card"><div class="grade-art"></div><span>クリア</span></div>
+                <div class="grade-card"><div class="grade-art"></div><span>シネマティック</span></div>
+                <div class="grade-card"><div class="grade-art"></div><span>ロマンチック</span></div>
+                <div class="grade-card"><div class="grade-art"></div><span>ナチュラル</span></div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <nav class="catalog-nav" aria-label="effect navigation">
+          <button class="nav-item active" type="button" data-view-target="effects"><span class="nav-ico">☆</span><span>人気</span></button>
+          <button class="nav-item" type="button"><span class="nav-ico">✣</span><span>キラキラ</span></button>
+          <button class="nav-item" type="button"><span class="nav-ico">♡</span><span>シンプル</span></button>
+          <button class="nav-item" type="button"><span class="nav-ico">♧</span><span>かわいい</span></button>
+          <button class="nav-item" type="button" data-view-target="editor"><span class="nav-ico">▤</span><span>編集へ</span></button>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+  <footer class="brand-band">
+    <div class="logo">
+      <div class="logo-title">Bloom</div>
+      <span>Video Editor</span>
+    </div>
+    <div class="tagline">
+      <h2>わたしらしく、きらめく毎日を。</h2>
+      <p>簡単操作で、思い出をもっと美しく、もっと楽しく。</p>
+    </div>
+    <div class="features">
+      <div class="feature"><span class="feature-icon">♕</span><p>簡単で<br>使いやすい</p></div>
+      <div class="feature"><span class="feature-icon">✣</span><p>豊富な<br>エフェクト</p></div>
+      <div class="feature"><span class="feature-icon">♡</span><p>かわいい<br>素材が充実</p></div>
+      <div class="feature"><span class="feature-icon">▤</span><p>高画質で<br>書き出し</p></div>
+      <div class="feature"><span class="feature-icon">↶</span><p>もどす<br>やり直す</p></div>
+    </div>
+  </footer>
+
+  <script>
+    const statusLog = [];
+    const redoLog = [];
+    const phones = document.querySelectorAll(".phone[data-view]");
+    const viewButtons = document.querySelectorAll(".view-switcher [data-view-target]");
+    const editorStatus = document.querySelector(".editor-caption");
+
+    function switchView(viewName) {
+      phones.forEach((phone) => {
+        const isActive = phone.dataset.view === viewName;
+        phone.classList.toggle("active", isActive);
+        phone.setAttribute("aria-hidden", String(!isActive));
+      });
+
+      viewButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.viewTarget === viewName);
+      });
+    }
+
+    function pushAction(label) {
+      statusLog.push(label);
+      redoLog.length = 0;
+      editorStatus.textContent = label;
+    }
+
+    document.querySelectorAll("[data-view-target]").forEach((button) => {
+      button.addEventListener("click", () => {
+        switchView(button.dataset.viewTarget);
+      });
+    });
+
+    document.querySelectorAll(".tool-item, .editor-tool, .catalog-tab, .nav-item").forEach((button) => {
+      button.addEventListener("click", () => {
+        const label = button.innerText.trim().replace(/\s+/g, " ");
+        if (label) {
+          pushAction(`${label}を選んだよ`);
+        }
+      });
+    });
+
+    document.querySelector(".create-card").addEventListener("click", () => {
+      pushAction("新しいプロジェクトを作る準備ができたよ");
+    });
+
+    document.querySelector(".js-play").addEventListener("click", () => {
+      pushAction("プレビュー再生中");
+    });
+
+    document.querySelector(".js-undo").addEventListener("click", () => {
+      const last = statusLog.pop();
+      if (!last) {
+        editorStatus.textContent = "これ以上、ひとつもどせないよ";
+        return;
+      }
+      redoLog.push(last);
+      editorStatus.textContent = "ひとつ前にもどしたよ";
+    });
+
+    document.querySelector(".js-redo").addEventListener("click", () => {
+      const next = redoLog.pop();
+      if (!next) {
+        editorStatus.textContent = "今はやり直せるものがないよ";
+        return;
+      }
+      statusLog.push(next);
+      editorStatus.textContent = "もう一度やり直したよ";
+    });
+
+    switchView("home");
+  </script>
+</body>
+</html>

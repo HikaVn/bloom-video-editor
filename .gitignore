@@ -1,0 +1,35 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+
+# Temporary work files
+*.tmp
+*.temp
+*.bak
+work/**/__*.js
+
+# Dependencies / build output
+node_modules/
+dist/
+build/
+.cache/
+
+# Video/media assets should not be committed directly
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.m4v
+*.mp3
+*.wav
+*.aac
+*.flac
+
+# Large design exports
+*.psd
+*.psb
+*.ai
