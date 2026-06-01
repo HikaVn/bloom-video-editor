@@ -244,11 +244,11 @@ function selectCard(card) {
 
   if (card.classList.contains("filter-card")) {
     updateFilterSelection(card);
-    pushAction(`${label}の配置を確認したよ`);
+    pushAction(`${label}を選んだよ`);
     return;
   }
 
-  pushAction(`${label}の配置を確認したよ`);
+  pushAction(`${label}を選んだよ`);
 }
 
 function openExportSheet() {
@@ -315,7 +315,7 @@ templateItems.forEach((item) => {
   makeSelectable(item);
   item.addEventListener("click", () => {
     switchView("editor");
-    pushAction(`${getActionLabel(item)}の配置を確認したよ`);
+    pushAction(`${getActionLabel(item)}を開いたよ`);
   });
   item.addEventListener("keydown", (event) => triggerKeyboardClick(item, event));
 });
@@ -331,7 +331,7 @@ selectableCards.forEach((card) => {
 });
 
 document.querySelector(".search").addEventListener("click", () => {
-  setStatus("機能項目を検索できるよ");
+  setStatus("機能や素材を検索できるよ");
 });
 
 document.querySelector(".js-play").addEventListener("click", () => {
