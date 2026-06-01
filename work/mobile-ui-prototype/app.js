@@ -244,18 +244,18 @@ function selectCard(card) {
 
   if (card.classList.contains("filter-card")) {
     updateFilterSelection(card);
-    pushAction(`${label}をプレビューにかけたよ`);
+    pushAction(`${label}をMVP候補に入れたよ`);
     return;
   }
 
-  pushAction(`${label}を追加したよ`);
+  pushAction(`${label}を実装候補に入れたよ`);
 }
 
 function openExportSheet() {
   exportSheet.hidden = false;
   exportStart.disabled = false;
-  exportStart.textContent = "書き出しを開始";
-  setStatus("書き出し設定を開いたよ");
+  exportStart.textContent = "実装候補に入れる";
+  setStatus("実装チケット化の設定を開いたよ");
   exportOptions[0]?.focus();
 }
 
@@ -268,18 +268,18 @@ function selectExportQuality(option) {
   exportOptions.forEach((item) => {
     item.classList.toggle("active", item === option);
   });
-  setStatus(`${option.dataset.quality}で書き出し準備中`);
+  setStatus(`${option.dataset.quality}で優先度を設定したよ`);
 }
 
 function startExport() {
-  const quality = document.querySelector(".export-option.active")?.dataset.quality || "1080p";
+  const quality = document.querySelector(".export-option.active")?.dataset.quality || "P0";
   exportStart.disabled = true;
-  exportStart.textContent = "書き出し中...";
+  exportStart.textContent = "候補に保存中...";
 
   clearTimeout(exportTimer);
   exportTimer = setTimeout(() => {
-    exportStart.textContent = "保存しました";
-    pushAction(`${quality} MP4を書き出したよ`);
+    exportStart.textContent = "候補に保存しました";
+    pushAction(`${quality}の実装候補として保存したよ`);
   }, 650);
 }
 
@@ -299,14 +299,14 @@ document.querySelectorAll(".tool-item, .editor-tool, .see-all, .menu-icon, .help
 });
 
 document.querySelector(".create-card").addEventListener("click", () => {
-  pushAction("新しいプロジェクトを作る準備ができたよ");
+  pushAction("Sprint 1の実装準備を始めたよ");
 });
 
 projectCards.forEach((card) => {
   makeSelectable(card);
   card.addEventListener("click", () => {
     switchView("editor");
-    pushAction(`${card.querySelector("strong").textContent}を開いたよ`);
+    pushAction(`${card.querySelector("strong").textContent}の設計を開いたよ`);
   });
   card.addEventListener("keydown", (event) => triggerKeyboardClick(card, event));
 });
@@ -315,7 +315,7 @@ templateItems.forEach((item) => {
   makeSelectable(item);
   item.addEventListener("click", () => {
     switchView("editor");
-    pushAction(`${getActionLabel(item)}テンプレートを使う準備ができたよ`);
+    pushAction(`${getActionLabel(item)}のデータ構造を確認したよ`);
   });
   item.addEventListener("keydown", (event) => triggerKeyboardClick(item, event));
 });
@@ -331,7 +331,7 @@ selectableCards.forEach((card) => {
 });
 
 document.querySelector(".search").addEventListener("click", () => {
-  setStatus("素材を検索できるよ");
+  setStatus("要件と実装候補を検索できるよ");
 });
 
 document.querySelector(".js-play").addEventListener("click", () => {

@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bloom Video Editor - UI Mock</title>
+  <title>Bloom Video Editor - Feature Plan</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="stage">
     <nav class="view-switcher" aria-label="画面切り替え">
-      <button class="active" type="button" data-view-target="home">ホーム</button>
-      <button type="button" data-view-target="editor">編集</button>
-      <button type="button" data-view-target="effects">エフェクト</button>
+      <button class="active" type="button" data-view-target="home">全体</button>
+      <button type="button" data-view-target="editor">MVP</button>
+      <button type="button" data-view-target="effects">要件</button>
     </nav>
 
     <section class="phone active" data-view="home" aria-label="Bloom home screen">
@@ -29,73 +29,73 @@
             </div>
 
             <section class="greeting">
-              <h1>こんにちは、さくらさん ❀</h1>
-              <p>素敵な一日を、素敵な動画で残しましょう。</p>
+              <h1>Bloom 実装ロードマップ</h1>
+              <p>見せ画面ではなく、実際に作る機能を優先順で確認します。</p>
             </section>
 
             <button class="create-card" type="button" data-view-target="editor">
               <span class="create-plus">＋</span>
-              <span><strong>新規作成</strong><span>新しいプロジェクトを始める</span></span>
+              <span><strong>Sprint 1を開始</strong><span>プロジェクト保存と一覧を実データ化する</span></span>
               <span style="font-size: 30px;">›</span>
             </button>
 
             <section>
               <div class="section-head">
-                <h2>マイプロジェクト</h2>
-                <button class="see-all" type="button">すべて見る ›</button>
+                <h2>最初に作る単位</h2>
+                <button class="see-all" type="button">詳細を見る ›</button>
               </div>
               <div class="project-row">
                 <article class="project-card">
-                  <div class="thumb flower-photo"><span class="duration">00:32</span></div>
-                  <div class="meta"><strong>お花屋さんVlog</strong><span>2024.05.12・32MB</span></div>
+                  <div class="thumb feature-thumb project-thumb"><span class="duration">01</span></div>
+                  <div class="meta"><strong>Project</strong><span>作成 / 保存 / 一覧</span></div>
                 </article>
                 <article class="project-card">
-                  <div class="thumb sea-photo"><span class="duration">01:08</span></div>
-                  <div class="meta"><strong>旅行の思い出</strong><span>2024.05.08・68MB</span></div>
+                  <div class="thumb feature-thumb media-thumb"><span class="duration">02</span></div>
+                  <div class="meta"><strong>Media</strong><span>動画 / 画像 / 音声</span></div>
                 </article>
                 <article class="project-card">
-                  <div class="thumb cafe-photo"><span class="duration">00:45</span></div>
-                  <div class="meta"><strong>カフェ巡り日記</strong><span>2024.05.03・25MB</span></div>
+                  <div class="thumb feature-thumb export-thumb"><span class="duration">03</span></div>
+                  <div class="meta"><strong>Export</strong><span>設定 / 進捗 / 保存</span></div>
                 </article>
               </div>
             </section>
 
             <section>
               <div class="section-head">
-                <h2>テンプレート</h2>
-                <button class="see-all" type="button">すべて見る ›</button>
+                <h2>データ構造</h2>
+                <button class="see-all" type="button">仕様を見る ›</button>
               </div>
               <div class="template-row">
-                <div class="template-item"><div class="template-icon">▣</div><span>Vlog</span></div>
-                <div class="template-item"><div class="template-icon">✈</div><span>旅行</span></div>
-                <div class="template-item"><div class="template-icon">☕</div><span>日常</span></div>
-                <div class="template-item"><div class="template-icon">▮</div><span>美容</span></div>
-                <div class="template-item"><div class="template-icon">♕</div><span>誕生日</span></div>
+                <div class="template-item"><div class="template-icon">P</div><span>Project</span></div>
+                <div class="template-item"><div class="template-icon">C</div><span>Clip</span></div>
+                <div class="template-item"><div class="template-icon">T</div><span>Track</span></div>
+                <div class="template-item"><div class="template-icon">E</div><span>Effect</span></div>
+                <div class="template-item"><div class="template-icon">R</div><span>Routine</span></div>
               </div>
             </section>
 
             <section>
               <div class="section-head">
-                <h2>クイックツール</h2>
+                <h2>MVP必須機能</h2>
               </div>
               <div class="tool-grid">
-                <button class="tool-item" type="button"><span class="tool-icon">⌁</span><span>一括編集</span></button>
-                <button class="tool-item" type="button"><span class="tool-icon">T</span><span>自動字幕</span></button>
-                <button class="tool-item" type="button"><span class="tool-icon">✂</span><span>AIカット</span></button>
-                <button class="tool-item" type="button"><span class="tool-icon">▧</span><span>写真から動画</span></button>
-                <button class="tool-item" type="button"><span class="tool-icon">▦</span><span>コラージュ</span></button>
-                <button class="tool-item" type="button"><span class="tool-icon">♬</span><span>録音</span></button>
-                <button class="tool-item" type="button"><span class="tool-icon">□</span><span>画面比率</span></button>
-                <button class="tool-item" type="button"><span class="tool-icon">♡</span><span>素材ストア</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">01</span><span>作成</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">02</span><span>読込</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">03</span><span>再生</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">04</span><span>編集</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">05</span><span>テキスト</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">06</span><span>BGM</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">07</span><span>書出</span></button>
+                <button class="tool-item" type="button"><span class="tool-icon">08</span><span>ルーチン</span></button>
               </div>
             </section>
           </div>
         </div>
 
         <nav class="phone-nav" aria-label="home navigation">
-          <button class="nav-item active" type="button" data-view-target="home"><span class="nav-ico">⌂</span><span>ホーム</span></button>
-          <button class="nav-item" type="button" data-view-target="effects"><span class="nav-ico">▦</span><span>テンプレート</span></button>
-          <button class="nav-item" type="button" data-view-target="editor"><span class="nav-ico">◎</span><span>編集</span></button>
+          <button class="nav-item active" type="button" data-view-target="home"><span class="nav-ico">⌂</span><span>全体</span></button>
+          <button class="nav-item" type="button" data-view-target="editor"><span class="nav-ico">◎</span><span>MVP</span></button>
+          <button class="nav-item" type="button" data-view-target="effects"><span class="nav-ico">▦</span><span>要件</span></button>
         </nav>
       </div>
     </section>
@@ -105,15 +105,20 @@
         <div class="phone-content">
           <header class="editor-header">
             <button class="control-btn" type="button" title="閉じる" style="font-size: 12px; width: auto;" data-view-target="home">閉じる</button>
-            <div class="editor-title">プロジェクト1⌄</div>
+            <div class="editor-title">MVP実装ボード</div>
             <button class="help-btn" type="button" title="ヘルプ">?</button>
-            <button class="export js-export" type="button">書き出し</button>
+            <button class="export js-export" type="button">詳細</button>
           </header>
           <div class="editor-body">
-            <section class="editor-photo">
-              <span class="sparkle"></span><span class="sparkle"></span><span class="sparkle"></span><span class="sparkle"></span>
-              <div class="script-title">Good day ♡</div>
-              <div class="editor-caption">今日もいい日だったね。</div>
+            <section class="editor-photo feature-dashboard">
+              <div class="dashboard-kicker">Sprint 1</div>
+              <div class="script-title">Data first</div>
+              <div class="editor-caption">Project / Clip / Export を先に実装</div>
+              <div class="dashboard-grid" aria-hidden="true">
+                <span><b>3</b> core models</span>
+                <span><b>4</b> screens</span>
+                <span><b>0</b> fake shelves</span>
+              </div>
             </section>
 
             <div class="editor-controls">
@@ -128,7 +133,7 @@
             </div>
 
             <div class="timeline-labels">
-              <span>00:12 / 00:32</span><span>00:10</span><span>00:20</span><span>00:30</span>
+              <span>Sprint 1</span><span>Data</span><span>Media</span><span>Export</span>
             </div>
 
             <section class="tracks" aria-label="timeline">
@@ -138,25 +143,25 @@
                 <span class="frame"></span><span class="frame"></span><span class="frame"></span>
               </div>
               <button class="add-clip" type="button" title="追加">＋</button>
-              <div class="track-card text-track">T　Good day ♡</div>
-              <div class="track-card audio-track">♫　BGM_春の予感.mp3</div>
+              <div class="track-card text-track">ProjectStore: 作成 / 更新 / 一覧</div>
+              <div class="track-card audio-track">MediaPipeline: 読み込み / プレビュー</div>
             </section>
 
             <section class="history-panel" aria-label="ここまで覚える">
               <div class="history-head">
                 <div>
-                  <h2>ここまで覚える</h2>
-                  <p>最近の操作をルーチンにして、次もワンタップで。</p>
+                  <h2>実装ログ</h2>
+                  <p>選んだ機能を記録し、実装スプリント候補として保存します。</p>
                 </div>
                 <span class="history-count">0件</span>
               </div>
               <ol class="history-list"></ol>
               <form class="routine-form">
-                <input class="routine-name" type="text" maxlength="18" placeholder="例：ふんわりVlog仕上げ" aria-label="ルーチン名" />
+                <input class="routine-name" type="text" maxlength="18" placeholder="例：Sprint 1 MVP" aria-label="スプリント名" />
                 <button class="routine-save" type="submit">保存</button>
               </form>
               <div class="routine-head">
-                <h3>保存済みルーチン</h3>
+                <h3>保存済みスプリント</h3>
                 <span class="routine-count">0件</span>
               </div>
               <div class="routine-list"></div>
@@ -165,12 +170,12 @@
         </div>
 
         <nav class="editor-tools">
-          <button class="editor-tool" type="button"><b>✂</b><span>分割</span></button>
-          <button class="editor-tool" type="button"><b>T</b><span>テキスト</span></button>
-          <button class="editor-tool" type="button" data-view-target="effects"><b>○</b><span>フィルター</span></button>
-          <button class="editor-tool" type="button"><b>♬</b><span>音楽</span></button>
-          <button class="editor-tool" type="button" data-view-target="effects"><b>☺</b><span>スタンプ</span></button>
-          <button class="editor-tool" type="button"><b>↯</b><span>速度調整</span></button>
+          <button class="editor-tool" type="button"><b>P</b><span>Project</span></button>
+          <button class="editor-tool" type="button"><b>M</b><span>Media</span></button>
+          <button class="editor-tool" type="button"><b>▶</b><span>Preview</span></button>
+          <button class="editor-tool" type="button"><b>▤</b><span>Timeline</span></button>
+          <button class="editor-tool" type="button" data-view-target="effects"><b>↗</b><span>Export</span></button>
+          <button class="editor-tool" type="button" data-view-target="effects"><b>R</b><span>Routine</span></button>
         </nav>
       </div>
     </section>
@@ -184,72 +189,72 @@
           </div>
           <div class="screen">
             <nav class="catalog-tabs">
-              <button class="catalog-tab active" type="button" data-catalog-target="filters">エフェクト</button>
-              <button class="catalog-tab" type="button" data-catalog-target="filters">フィルター</button>
-              <button class="catalog-tab" type="button" data-catalog-target="titles">テンプレート</button>
+              <button class="catalog-tab active" type="button" data-catalog-target="filters">MVP</button>
+              <button class="catalog-tab" type="button" data-catalog-target="stamps">改善</button>
+              <button class="catalog-tab" type="button" data-catalog-target="grades">技術</button>
               <button class="search" type="button" title="検索">⌕</button>
             </nav>
 
             <section class="catalog-section" data-catalog-section="filters">
               <div class="section-head">
-                <h2>おすすめフィルター</h2>
-                <button class="see-all" type="button">すべて見る ›</button>
+                <h2>MVP必須</h2>
+                <button class="see-all" type="button">優先順 ›</button>
               </div>
               <div class="filter-row">
-                <div class="filter-card active" role="button" tabindex="0" data-filter="pink" data-action-label="ピュアピンク"><div class="filter-img flower-photo"><span class="check">✓</span></div><span>ピュアピンク</span></div>
-                <div class="filter-card" role="button" tabindex="0" data-filter="warm" data-action-label="ウォーム"><div class="filter-img flower-photo warm"></div><span>ウォーム</span></div>
-                <div class="filter-card" role="button" tabindex="0" data-filter="lavender" data-action-label="ラベンダー"><div class="filter-img flower-photo lavender"></div><span>ラベンダー</span></div>
-                <div class="filter-card" role="button" tabindex="0" data-filter="beige" data-action-label="ミルキーベージュ"><div class="filter-img flower-photo beige"></div><span>ミルキーベージュ</span></div>
+                <div class="filter-card active" role="button" tabindex="0" data-action-label="プロジェクト保存"><div class="filter-img feature-tile"><strong>Project</strong><small>保存と一覧</small><span class="check">✓</span></div><span>プロジェクト保存</span></div>
+                <div class="filter-card" role="button" tabindex="0" data-action-label="メディア読み込み"><div class="filter-img feature-tile"><strong>Media</strong><small>動画/画像/音声</small></div><span>メディア読込</span></div>
+                <div class="filter-card" role="button" tabindex="0" data-action-label="プレビュー再生"><div class="filter-img feature-tile"><strong>Preview</strong><small>再生と確認</small></div><span>プレビュー再生</span></div>
+                <div class="filter-card" role="button" tabindex="0" data-action-label="タイムライン編集"><div class="filter-img feature-tile"><strong>Timeline</strong><small>分割/削除</small></div><span>タイムライン</span></div>
               </div>
             </section>
 
             <section class="catalog-section" data-catalog-section="stamps">
               <div class="section-head">
-                <h2>スタンプ</h2>
-                <button class="see-all" type="button">すべて見る ›</button>
+                <h2>編集の実機能</h2>
+                <button class="see-all" type="button">仕様化 ›</button>
               </div>
               <div class="stamp-row">
-                <div class="stamp-card"><div class="stamp-art">♡</div><span>ハートフレーム</span></div>
-                <div class="stamp-card"><div class="stamp-art">✦</div><span>きらきら</span></div>
-                <div class="stamp-card"><div class="stamp-art">♡</div><span>手書きハート</span></div>
-                <div class="stamp-card"><div class="stamp-art">❀</div><span>フラワーシャワー</span></div>
+                <div class="stamp-card"><div class="stamp-art">Tx</div><span>テキスト追加</span></div>
+                <div class="stamp-card"><div class="stamp-art">Au</div><span>BGM/音量</span></div>
+                <div class="stamp-card"><div class="stamp-art">Ex</div><span>書き出し</span></div>
+                <div class="stamp-card"><div class="stamp-art">Rt</div><span>ここまで覚える</span></div>
               </div>
             </section>
 
             <section class="catalog-section" data-catalog-section="titles">
               <div class="section-head">
-                <h2>タイトル</h2>
-                <button class="see-all" type="button">すべて見る ›</button>
+                <h2>次フェーズ</h2>
+                <button class="see-all" type="button">後で実装 ›</button>
               </div>
               <div class="title-row">
-                <div class="title-card"><div class="title-art">Daily Vlog<br><small>今日の出来事</small></div></div>
-                <div class="title-card"><div class="title-art peach">休日の過ごし方<br><small>vlog</small></div></div>
-                <div class="title-card"><div class="title-art gray">思い出日記<br><small>memory</small></div></div>
-                <div class="title-card"><div class="title-art pink">わたしの<br>ご褒美時間</div></div>
+                <div class="title-card"><div class="title-art">Auto Caption<br><small>自動字幕</small></div></div>
+                <div class="title-card"><div class="title-art peach">1Tap Beauty<br><small>美容補正</small></div></div>
+                <div class="title-card"><div class="title-art gray">Template<br><small>雛形生成</small></div></div>
+                <div class="title-card"><div class="title-art pink">AI Cut<br><small>自動短縮</small></div></div>
               </div>
             </section>
 
             <section class="catalog-section" data-catalog-section="grades">
               <div class="section-head">
-                <h2>カラーグレーディング</h2>
-                <button class="see-all" type="button">すべて見る ›</button>
+                <h2>技術判断</h2>
+                <button class="see-all" type="button">決める ›</button>
               </div>
               <div class="grade-row">
-                <div class="grade-card"><div class="grade-art"></div><span>クリア</span></div>
-                <div class="grade-card"><div class="grade-art"></div><span>シネマティック</span></div>
-                <div class="grade-card"><div class="grade-art"></div><span>ロマンチック</span></div>
-                <div class="grade-card"><div class="grade-art"></div><span>ナチュラル</span></div>
+                <div class="grade-card"><div class="grade-art tech-art">FF</div><span>FFmpeg</span></div>
+                <div class="grade-card"><div class="grade-art tech-art">MP</div><span>MediaPipe</span></div>
+                <div class="grade-card"><div class="grade-art tech-art">DB</div><span>保存方式</span></div>
+                <div class="grade-card"><div class="grade-art tech-art">RN</div><span>モバイル</span></div>
               </div>
             </section>
           </div>
         </div>
 
         <nav class="catalog-nav" aria-label="effect navigation">
-          <button class="nav-item active" type="button" data-view-target="effects"><span class="nav-ico">☆</span><span>人気</span></button>
-          <button class="nav-item" type="button"><span class="nav-ico">✣</span><span>キラキラ</span></button>
-          <button class="nav-item" type="button"><span class="nav-ico">♡</span><span>シンプル</span></button>
-          <button class="nav-item" type="button"><span class="nav-ico">♧</span><span>かわいい</span></button>
-          <button class="nav-item" type="button" data-view-target="editor"><span class="nav-ico">▤</span><span>編集へ</span></button>
+          <button class="nav-item active" type="button" data-view-target="effects"><span class="nav-ico">1</span><span>MVP</span></button>
+          <button class="nav-item" type="button"><span class="nav-ico">2</span><span>改善</span></button>
+          <button class="nav-item" type="button"><span class="nav-ico">3</span><span>差別化</span></button>
+          <button class="nav-item" type="button"><span class="nav-ico">?</span><span>判断</span></button>
+          <button class="nav-item" type="button" data-view-target="editor"><span class="nav-ico">▤</span><span>MVPへ</span></button>
         </nav>
       </div>
     </section>
@@ -261,15 +266,15 @@
       <span>Video Editor</span>
     </div>
     <div class="tagline">
-      <h2>わたしらしく、きらめく毎日を。</h2>
-      <p>簡単操作で、思い出をもっと美しく、もっと楽しく。</p>
+      <h2>見た目の棚から、実装ロードマップへ。</h2>
+      <p>Project / Media / Preview / Timeline / Export を先に作る。</p>
     </div>
     <div class="features">
-      <div class="feature"><span class="feature-icon">♕</span><p>簡単で<br>使いやすい</p></div>
-      <div class="feature"><span class="feature-icon">✣</span><p>豊富な<br>エフェクト</p></div>
-      <div class="feature"><span class="feature-icon">♡</span><p>かわいい<br>素材が充実</p></div>
-      <div class="feature"><span class="feature-icon">▤</span><p>高画質で<br>書き出し</p></div>
-      <div class="feature"><span class="feature-icon">↶</span><p>もどす<br>やり直す</p></div>
+      <div class="feature"><span class="feature-icon">P</span><p>Project<br>保存</p></div>
+      <div class="feature"><span class="feature-icon">M</span><p>Media<br>読込</p></div>
+      <div class="feature"><span class="feature-icon">T</span><p>Timeline<br>編集</p></div>
+      <div class="feature"><span class="feature-icon">E</span><p>Export<br>保存</p></div>
+      <div class="feature"><span class="feature-icon">R</span><p>Routine<br>再利用</p></div>
     </div>
   </footer>
 
@@ -278,22 +283,22 @@
       <div class="sheet-handle" aria-hidden="true"></div>
       <div class="sheet-head">
         <div>
-          <h2 id="export-title">書き出し</h2>
-          <p>この編集を動画として保存します。</p>
+          <h2 id="export-title">実装チケット化</h2>
+          <p>選んだMVP機能を開発タスクとして扱います。</p>
         </div>
         <button class="sheet-close" type="button" title="閉じる">×</button>
       </div>
-      <div class="export-options" aria-label="画質">
-        <button class="export-option active" type="button" data-quality="1080p"><strong>1080p</strong><span>おすすめ</span></button>
-        <button class="export-option" type="button" data-quality="720p"><strong>720p</strong><span>軽め</span></button>
-        <button class="export-option" type="button" data-quality="4K"><strong>4K</strong><span>高画質</span></button>
+      <div class="export-options" aria-label="優先度">
+        <button class="export-option active" type="button" data-quality="P0"><strong>P0</strong><span>必須</span></button>
+        <button class="export-option" type="button" data-quality="P1"><strong>P1</strong><span>次点</span></button>
+        <button class="export-option" type="button" data-quality="P2"><strong>P2</strong><span>後で</span></button>
       </div>
       <div class="export-summary">
-        <span>形式</span><strong>MP4</strong>
-        <span>長さ</span><strong>00:32</strong>
-        <span>保存先</span><strong>Bloom / Draft</strong>
+        <span>対象</span><strong>MVP Core</strong>
+        <span>粒度</span><strong>1 sprint</strong>
+        <span>保存先</span><strong>feature roadmap</strong>
       </div>
-      <button class="export-start" type="button">書き出しを開始</button>
+      <button class="export-start" type="button">実装候補に入れる</button>
     </section>
   </div>
 

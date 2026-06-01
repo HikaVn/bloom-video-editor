@@ -363,6 +363,44 @@ p {
     linear-gradient(135deg, #eee3d4, #c6aa91);
 }
 
+.feature-thumb {
+  display: grid;
+  place-items: center;
+}
+
+.feature-thumb::before {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.project-thumb {
+  background: linear-gradient(135deg, #ff9baa, #c79fe6);
+}
+
+.project-thumb::before {
+  content: "DATA";
+}
+
+.media-thumb {
+  background: linear-gradient(135deg, #8ec9df, #f3c6a7);
+}
+
+.media-thumb::before {
+  content: "PIPE";
+}
+
+.export-thumb {
+  background: linear-gradient(135deg, #8f7ed1, #f47fa0);
+}
+
+.export-thumb::before {
+  content: "SHIP";
+}
+
 .duration {
   position: absolute;
   left: 6px;
@@ -546,6 +584,80 @@ p {
     radial-gradient(circle at 45% 42%, #643b32 0 19%, transparent 20%),
     linear-gradient(135deg, #ffe5d7, #fff7ef 45%, #d8e1e5 46%, #f0e5d8);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.36);
+}
+
+.feature-dashboard {
+  display: grid;
+  align-content: end;
+  gap: 12px;
+  padding: 24px 26px;
+  background:
+    linear-gradient(150deg, rgba(255, 140, 160, 0.95), rgba(126, 102, 193, 0.88)),
+    linear-gradient(135deg, #ffe5d7, #d8e1e5);
+}
+
+.feature-dashboard::after {
+  background:
+    linear-gradient(180deg, transparent 18%, rgba(0, 0, 0, 0.42)),
+    repeating-linear-gradient(90deg, transparent 0 17px, rgba(255, 255, 255, 0.08) 17px 18px);
+}
+
+.dashboard-kicker {
+  position: relative;
+  z-index: 2;
+  width: max-content;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #6c3d56;
+  background: rgba(255, 255, 255, 0.74);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.feature-dashboard .script-title,
+.feature-dashboard .editor-caption {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  z-index: 2;
+}
+
+.feature-dashboard .script-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 34px;
+  font-style: italic;
+}
+
+.feature-dashboard .editor-caption {
+  margin-top: -9px;
+  font-size: 12px;
+}
+
+.dashboard-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+
+.dashboard-grid span {
+  min-width: 0;
+  padding: 9px 7px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 9px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.dashboard-grid b {
+  display: block;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1.1;
 }
 
 .editor-photo.preview-warm {
@@ -1032,6 +1144,39 @@ p {
   box-shadow: 0 8px 14px rgba(144, 109, 107, 0.08);
 }
 
+.feature-tile {
+  padding: 10px 7px;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+  background: linear-gradient(145deg, #fff4f5, #eee3f8);
+}
+
+.feature-tile::after {
+  content: none;
+}
+
+.feature-tile strong,
+.feature-tile small {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.feature-tile strong {
+  color: #805e76;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.feature-tile small {
+  margin-top: 4px;
+  color: #9a8790;
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
 .filter-card.active .filter-img {
   outline: 3px solid #c794e3;
   outline-offset: -3px;
@@ -1121,6 +1266,13 @@ p {
     radial-gradient(circle at 53% 27%, #e99b43 0 9%, transparent 10%),
     radial-gradient(circle at 55% 31%, #f7d85b 0 15%, transparent 16%),
     linear-gradient(145deg, #96d8f5 0 50%, #a8826b 50% 100%);
+}
+
+.tech-art {
+  color: #8a6173;
+  background: linear-gradient(145deg, #eef5ff, #ffe6ee);
+  font-size: 18px;
+  font-weight: 900;
 }
 
 .grade-card:nth-child(2) .grade-art {
