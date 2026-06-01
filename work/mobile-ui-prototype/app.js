@@ -24,6 +24,10 @@ let videoTrimStart = 0;
 let videoTrimEnd = 32;
 let mediaObjectUrl = null;
 let mediaObjectUrlIsLocal = false;
+let videoExportRecorder = null;
+let videoExportStopTimer = null;
+let isVideoExporting = false;
+let videoExportFailed = false;
 
 const phones = document.querySelectorAll(".phone[data-view]");
 const viewTargetButtons = document.querySelectorAll("[data-view-target]");
@@ -62,6 +66,7 @@ const previewImage = document.querySelector(".preview-image");
 const previewVideo = document.querySelector(".preview-video");
 const importButtons = document.querySelectorAll("[data-import-media]");
 const savePhotoButton = document.querySelector(".save-photo");
+const trimExportButton = document.querySelector(".trim-export");
 const videoDurationLabel = document.querySelector(".video-duration");
 const videoTrimSliders = document.querySelectorAll(".video-trim-slider");
 const videoTrimStartLabel = document.querySelector(".video-trim-start");
@@ -199,13 +204,22 @@ function formatTime(seconds) {
 }
 
 function updateVideoTrimDisplay() {
+  const hasPlayableVideo = !previewVideo.hidden && Boolean(previewVideo.src) && Boolean(activeVideoDuration);
+  const canExportVideo = Boolean(
+    window.MediaRecorder
+      && (previewVideo.captureStream || previewVideo.mozCaptureStream || HTMLCanvasElement.prototype.captureStream)
+  );
   videoTrimStartLabel.textContent = formatTime(videoTrimStart);
   videoTrimEndLabel.textContent = formatTime(videoTrimEnd);
   videoTrimSliders.forEach((slider) => {
     slider.max = activeVideoDuration.toFixed(1);
-    slider.disabled = previewVideo.hidden || !activeVideoDuration;
+    slider.disabled = !hasPlayableVideo;
     slider.value = slider.dataset.videoTrim === "start" ? videoTrimStart : videoTrimEnd;
   });
+  trimExportButton.disabled = !hasPlayableVideo || isVideoExporting;
+  if (!isVideoExporting) {
+    trimExportButton.textContent = hasPlayableVideo && !canExportVideo ? "この環境は未対応" : "範囲を書き出し";
+  }
   videoDurationLabel.textContent = previewVideo.hidden
     ? "動画を選んでください"
     : `長さ ${formatTime(activeVideoDuration)}`;
@@ -322,6 +336,156 @@ function saveEditedPhoto() {
   link.href = canvas.toDataURL("image/png");
   link.click();
   pushAction(`${activePhotoRatio}で写真を保存しました`);
+}
+
+function getSupportedRecordingType() {
+  if (!window.MediaRecorder) {
+    return "";
+  }
+
+  const recordingTypes = [
+    "video/webm;codecs=vp9,opus",
+    "video/webm;codecs=vp8,opus",
+    "video/webm",
+    "video/mp4",
+  ];
+  return recordingTypes.find((type) => MediaRecorder.isTypeSupported(type)) || "";
+}
+
+function resetTrimExportButton() {
+  isVideoExporting = false;
+  videoExportFailed = false;
+  clearTimeout(videoExportStopTimer);
+  trimExportButton.textContent = "範囲を書き出し";
+  updateVideoTrimDisplay();
+}
+
+function stopVideoExport() {
+  clearTimeout(videoExportStopTimer);
+  if (videoExportRecorder && videoExportRecorder.state !== "inactive") {
+    videoExportRecorder.stop();
+  }
+}
+
+function createVideoExportStream() {
+  const captureStream = previewVideo.captureStream || previewVideo.mozCaptureStream;
+  if (captureStream) {
+    const stream = captureStream.call(previewVideo);
+    return {
+      stream,
+      cleanup: () => stream.getTracks().forEach((track) => track.stop()),
+      start: () => {},
+    };
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = previewVideo.videoWidth || previewVideo.clientWidth || 720;
+  canvas.height = previewVideo.videoHeight || previewVideo.clientHeight || 1280;
+  const context = canvas.getContext("2d");
+  const stream = canvas.captureStream(30);
+  let frameRequest = null;
+
+  const drawFrame = () => {
+    if (!isVideoExporting) {
+      return;
+    }
+    try {
+      context.drawImage(previewVideo, 0, 0, canvas.width, canvas.height);
+      frameRequest = requestAnimationFrame(drawFrame);
+    } catch {
+      videoExportFailed = true;
+      setStatus("この動画URLはブラウザ権限で書き出せません");
+      stopVideoExport();
+    }
+  };
+
+  return {
+    stream,
+    cleanup: () => {
+      cancelAnimationFrame(frameRequest);
+      stream.getTracks().forEach((track) => track.stop());
+    },
+    start: drawFrame,
+  };
+}
+
+async function exportTrimmedVideo() {
+  if (previewVideo.hidden || !previewVideo.src) {
+    setStatus("先に動画を選んでください");
+    return;
+  }
+
+  const canCaptureCanvas = Boolean(HTMLCanvasElement.prototype.captureStream);
+  const canCaptureVideo = Boolean(previewVideo.captureStream || previewVideo.mozCaptureStream);
+  if (!window.MediaRecorder || (!canCaptureVideo && !canCaptureCanvas)) {
+    setStatus("このブラウザでは動画の書き出しに対応していません");
+    return;
+  }
+
+  const durationMs = Math.max(300, (videoTrimEnd - videoTrimStart) * 1000);
+  const chunks = [];
+  const mimeType = getSupportedRecordingType();
+  let exportStream = null;
+
+  try {
+    previewVideo.pause();
+    if (Math.abs(previewVideo.currentTime - videoTrimStart) > 0.05) {
+      previewVideo.currentTime = videoTrimStart;
+      await new Promise((resolve) => {
+        const seekTimer = setTimeout(resolve, 500);
+        previewVideo.addEventListener("seeked", () => {
+          clearTimeout(seekTimer);
+          resolve();
+        }, { once: true });
+      });
+    }
+
+    exportStream = createVideoExportStream();
+    videoExportRecorder = new MediaRecorder(exportStream.stream, mimeType ? { mimeType } : undefined);
+    videoExportRecorder.addEventListener("dataavailable", (event) => {
+      if (event.data.size > 0) {
+        chunks.push(event.data);
+      }
+    });
+    videoExportRecorder.addEventListener("stop", () => {
+      exportStream.cleanup();
+      if (videoExportFailed || chunks.length === 0) {
+        previewVideo.pause();
+        previewVideo.currentTime = videoTrimStart;
+        setStatus("動画の書き出しを完了できませんでした");
+        resetTrimExportButton();
+        return;
+      }
+
+      const blob = new Blob(chunks, { type: mimeType || "video/webm" });
+      const extension = (mimeType || "").includes("mp4") ? "mp4" : "webm";
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.download = `bloom-trim-${Date.now()}.${extension}`;
+      link.href = url;
+      link.click();
+      URL.revokeObjectURL(url);
+      previewVideo.pause();
+      previewVideo.currentTime = videoTrimStart;
+      pushAction(`${formatTime(videoTrimStart)}-${formatTime(videoTrimEnd)}を書き出しました`);
+      resetTrimExportButton();
+    });
+
+    isVideoExporting = true;
+    trimExportButton.disabled = true;
+    trimExportButton.textContent = "書き出し中...";
+    videoExportRecorder.start();
+    exportStream.start();
+    await previewVideo.play();
+    videoExportStopTimer = setTimeout(stopVideoExport, durationMs + 120);
+  } catch {
+    if (videoExportRecorder && videoExportRecorder.state !== "inactive") {
+      videoExportRecorder.stop();
+    }
+    exportStream?.cleanup();
+    setStatus("動画の書き出しを開始できませんでした");
+    resetTrimExportButton();
+  }
 }
 
 function playPreview() {
@@ -617,6 +781,7 @@ mediaInput.addEventListener("change", () => {
 });
 
 savePhotoButton.addEventListener("click", saveEditedPhoto);
+trimExportButton.addEventListener("click", exportTrimmedVideo);
 
 videoTrimSliders.forEach((slider) => {
   slider.addEventListener("input", () => {
@@ -630,6 +795,10 @@ videoTrimSliders.forEach((slider) => {
 
 previewVideo.addEventListener("timeupdate", () => {
   if (!previewVideo.paused && previewVideo.currentTime >= videoTrimEnd) {
+    if (isVideoExporting) {
+      stopVideoExport();
+      return;
+    }
     previewVideo.pause();
     previewVideo.currentTime = videoTrimStart;
   }

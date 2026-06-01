@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icons/bloom-icon.svg" />
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=8" />
 </head>
 <body>
   <main class="stage">
@@ -157,6 +157,7 @@
                 <button class="import-button" type="button" data-import-media="video">動画を選ぶ</button>
                 <span class="video-duration">動画を選んでください</span>
               </div>
+              <button class="trim-export" type="button" disabled>範囲を書き出し</button>
               <div class="video-trim-list">
                 <label>
                   <span>開始 <b class="video-trim-start">00:00</b></span>
@@ -367,7 +368,7 @@
   </div>
 
   <input class="media-input" type="file" accept="image/*,video/*" hidden />
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=8"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
