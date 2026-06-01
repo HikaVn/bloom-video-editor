@@ -23,6 +23,7 @@ let activeVideoDuration = 32;
 let videoTrimStart = 0;
 let videoTrimEnd = 32;
 let mediaObjectUrl = null;
+let mediaObjectUrlIsLocal = false;
 
 const phones = document.querySelectorAll(".phone[data-view]");
 const viewTargetButtons = document.querySelectorAll("[data-view-target]");
@@ -221,10 +222,11 @@ function setVideoTrim(kind, value) {
 }
 
 function revokeMediaUrl() {
-  if (mediaObjectUrl) {
+  if (mediaObjectUrl && mediaObjectUrlIsLocal) {
     URL.revokeObjectURL(mediaObjectUrl);
-    mediaObjectUrl = null;
   }
+  mediaObjectUrl = null;
+  mediaObjectUrlIsLocal = false;
 }
 
 function openMediaPicker(mediaType) {
@@ -238,6 +240,7 @@ function openMediaPicker(mediaType) {
 function showImagePreview(file) {
   revokeMediaUrl();
   mediaObjectUrl = URL.createObjectURL(file);
+  mediaObjectUrlIsLocal = true;
   previewImage.src = mediaObjectUrl;
   previewImage.hidden = false;
   previewVideo.hidden = true;
@@ -250,15 +253,16 @@ function showImagePreview(file) {
   setStatus(`${file.name}を読み込みました`);
 }
 
-function showVideoPreview(file) {
+function setVideoSource(src, label, isLocalObjectUrl = false) {
   revokeMediaUrl();
-  mediaObjectUrl = URL.createObjectURL(file);
+  mediaObjectUrl = src;
+  mediaObjectUrlIsLocal = isLocalObjectUrl;
   previewVideo.onloadedmetadata = () => {
     activeVideoDuration = Number.isFinite(previewVideo.duration) ? previewVideo.duration : 32;
     videoTrimStart = 0;
     videoTrimEnd = activeVideoDuration;
     updateVideoTrimDisplay();
-    setStatus(`${file.name}を読み込みました`);
+    setStatus(`${label}を読み込みました`);
   };
   previewVideo.src = mediaObjectUrl;
   previewVideo.hidden = false;
@@ -268,6 +272,15 @@ function showVideoPreview(file) {
   editorPhoto.classList.remove("photo-original");
   savePhotoButton.disabled = true;
   setEditorMode("video");
+}
+
+function showVideoPreview(file) {
+  setVideoSource(URL.createObjectURL(file), file.name, true);
+}
+
+function showVideoUrl(url, label = "動画URL") {
+  setVideoSource(url, label, false);
+  switchView("editor");
 }
 
 function handleMediaFile(file) {
@@ -320,6 +333,18 @@ function playPreview() {
   }
 
   pushAction("プレビュー再生中");
+}
+
+function loadStartupVideoFromQuery() {
+  const params = new URLSearchParams(window.location.search);
+  const videoUrl = params.get("videoUrl");
+  if (!videoUrl) {
+    return;
+  }
+
+  const videoName = params.get("videoName") || "動画URL";
+  showVideoUrl(videoUrl, videoName);
+  pushAction(`${videoName}をURLから読み込みました`);
 }
 
 function renderHistory() {
@@ -747,3 +772,4 @@ setPhotoRatio(activePhotoRatio);
 updateVideoTrimDisplay();
 setEditorMode("video");
 switchView("home");
+loadStartupVideoFromQuery();
