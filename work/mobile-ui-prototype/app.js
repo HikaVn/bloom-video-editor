@@ -28,6 +28,8 @@ let videoExportRecorder = null;
 let videoExportStopTimer = null;
 let isVideoExporting = false;
 let videoExportFailed = false;
+let playbackWatchTimer = null;
+let playbackWatchStartTime = 0;
 
 const phones = document.querySelectorAll(".phone[data-view]");
 const viewTargetButtons = document.querySelectorAll("[data-view-target]");
@@ -101,6 +103,30 @@ function pushAction(label) {
 
 function setStatus(label) {
   editorStatus.textContent = label;
+}
+
+function clearPlaybackWatch() {
+  clearTimeout(playbackWatchTimer);
+  playbackWatchTimer = null;
+}
+
+function showPlaybackUnsupportedMessage() {
+  setStatus("この動画はブラウザで再生できない形式の可能性があります。H.264/AACのMP4に変換してください");
+}
+
+function watchPlaybackProgress(startTime) {
+  clearPlaybackWatch();
+  playbackWatchStartTime = startTime;
+  playbackWatchTimer = setTimeout(() => {
+    if (previewVideo.paused || previewVideo.ended) {
+      return;
+    }
+
+    if (previewVideo.currentTime <= startTime + 0.05) {
+      previewVideo.pause();
+      showPlaybackUnsupportedMessage();
+    }
+  }, 1800);
 }
 
 function setDashboardLabels(modeName) {
@@ -491,7 +517,11 @@ async function exportTrimmedVideo() {
 function playPreview() {
   if (!previewVideo.hidden && previewVideo.src) {
     previewVideo.currentTime = videoTrimStart;
-    previewVideo.play();
+    const playPromise = previewVideo.play();
+    if (playPromise?.catch) {
+      playPromise.catch(showPlaybackUnsupportedMessage);
+    }
+    watchPlaybackProgress(videoTrimStart);
     pushAction(`${formatTime(videoTrimStart)}-${formatTime(videoTrimEnd)}を再生中`);
     return;
   }
@@ -794,6 +824,9 @@ videoTrimSliders.forEach((slider) => {
 });
 
 previewVideo.addEventListener("timeupdate", () => {
+  if (previewVideo.currentTime > playbackWatchStartTime + 0.05) {
+    clearPlaybackWatch();
+  }
   if (!previewVideo.paused && previewVideo.currentTime >= videoTrimEnd) {
     if (isVideoExporting) {
       stopVideoExport();
@@ -803,6 +836,13 @@ previewVideo.addEventListener("timeupdate", () => {
     previewVideo.currentTime = videoTrimStart;
   }
 });
+
+previewVideo.addEventListener("play", () => {
+  watchPlaybackProgress(previewVideo.currentTime);
+});
+
+previewVideo.addEventListener("playing", clearPlaybackWatch);
+previewVideo.addEventListener("error", showPlaybackUnsupportedMessage);
 
 createCards.forEach((card) => {
   card.addEventListener("click", () => {
