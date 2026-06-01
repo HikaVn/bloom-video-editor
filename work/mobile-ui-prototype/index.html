@@ -16,7 +16,7 @@
 
     <section class="phone active" data-view="home" aria-label="Bloom home screen">
       <div class="phone-inner">
-        <div>
+        <div class="phone-content">
           <div class="status">
             <span>9:41</span>
             <span class="status-icons"><span class="signal"></span><span>⌁</span><span class="battery"></span></span>
@@ -102,12 +102,12 @@
 
     <section class="phone dark" data-view="editor" aria-label="Bloom editor screen">
       <div class="phone-inner">
-        <div>
+        <div class="phone-content">
           <header class="editor-header">
             <button class="control-btn" type="button" title="閉じる" style="font-size: 12px; width: auto;" data-view-target="home">閉じる</button>
             <div class="editor-title">プロジェクト1⌄</div>
             <button class="help-btn" type="button" title="ヘルプ">?</button>
-            <button class="export" type="button">書き出し</button>
+            <button class="export js-export" type="button">書き出し</button>
           </header>
           <div class="editor-body">
             <section class="editor-photo">
@@ -177,33 +177,33 @@
 
     <section class="phone" data-view="effects" aria-label="Bloom effect screen">
       <div class="phone-inner">
-        <div>
+        <div class="phone-content">
           <div class="status">
             <span>9:41</span>
             <span class="status-icons"><span class="signal"></span><span>⌁</span><span class="battery"></span></span>
           </div>
           <div class="screen">
             <nav class="catalog-tabs">
-              <button class="catalog-tab active" type="button">エフェクト</button>
-              <button class="catalog-tab" type="button">フィルター</button>
-              <button class="catalog-tab" type="button">テンプレート</button>
+              <button class="catalog-tab active" type="button" data-catalog-target="filters">エフェクト</button>
+              <button class="catalog-tab" type="button" data-catalog-target="filters">フィルター</button>
+              <button class="catalog-tab" type="button" data-catalog-target="titles">テンプレート</button>
               <button class="search" type="button" title="検索">⌕</button>
             </nav>
 
-            <section class="catalog-section">
+            <section class="catalog-section" data-catalog-section="filters">
               <div class="section-head">
                 <h2>おすすめフィルター</h2>
                 <button class="see-all" type="button">すべて見る ›</button>
               </div>
               <div class="filter-row">
-                <div class="filter-card active"><div class="filter-img flower-photo"><span class="check">✓</span></div><span>ピュアピンク</span></div>
-                <div class="filter-card"><div class="filter-img flower-photo warm"></div><span>ウォーム</span></div>
-                <div class="filter-card"><div class="filter-img flower-photo lavender"></div><span>ラベンダー</span></div>
-                <div class="filter-card"><div class="filter-img flower-photo beige"></div><span>ミルキーベージュ</span></div>
+                <div class="filter-card active" role="button" tabindex="0" data-filter="pink" data-action-label="ピュアピンク"><div class="filter-img flower-photo"><span class="check">✓</span></div><span>ピュアピンク</span></div>
+                <div class="filter-card" role="button" tabindex="0" data-filter="warm" data-action-label="ウォーム"><div class="filter-img flower-photo warm"></div><span>ウォーム</span></div>
+                <div class="filter-card" role="button" tabindex="0" data-filter="lavender" data-action-label="ラベンダー"><div class="filter-img flower-photo lavender"></div><span>ラベンダー</span></div>
+                <div class="filter-card" role="button" tabindex="0" data-filter="beige" data-action-label="ミルキーベージュ"><div class="filter-img flower-photo beige"></div><span>ミルキーベージュ</span></div>
               </div>
             </section>
 
-            <section class="catalog-section">
+            <section class="catalog-section" data-catalog-section="stamps">
               <div class="section-head">
                 <h2>スタンプ</h2>
                 <button class="see-all" type="button">すべて見る ›</button>
@@ -216,7 +216,7 @@
               </div>
             </section>
 
-            <section class="catalog-section">
+            <section class="catalog-section" data-catalog-section="titles">
               <div class="section-head">
                 <h2>タイトル</h2>
                 <button class="see-all" type="button">すべて見る ›</button>
@@ -229,7 +229,7 @@
               </div>
             </section>
 
-            <section class="catalog-section">
+            <section class="catalog-section" data-catalog-section="grades">
               <div class="section-head">
                 <h2>カラーグレーディング</h2>
                 <button class="see-all" type="button">すべて見る ›</button>
@@ -272,6 +272,30 @@
       <div class="feature"><span class="feature-icon">↶</span><p>もどす<br>やり直す</p></div>
     </div>
   </footer>
+
+  <div class="sheet-backdrop" data-export-sheet hidden>
+    <section class="export-sheet" role="dialog" aria-modal="true" aria-labelledby="export-title">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <div>
+          <h2 id="export-title">書き出し</h2>
+          <p>この編集を動画として保存します。</p>
+        </div>
+        <button class="sheet-close" type="button" title="閉じる">×</button>
+      </div>
+      <div class="export-options" aria-label="画質">
+        <button class="export-option active" type="button" data-quality="1080p"><strong>1080p</strong><span>おすすめ</span></button>
+        <button class="export-option" type="button" data-quality="720p"><strong>720p</strong><span>軽め</span></button>
+        <button class="export-option" type="button" data-quality="4K"><strong>4K</strong><span>高画質</span></button>
+      </div>
+      <div class="export-summary">
+        <span>形式</span><strong>MP4</strong>
+        <span>長さ</span><strong>00:32</strong>
+        <span>保存先</span><strong>Bloom / Draft</strong>
+      </div>
+      <button class="export-start" type="button">書き出しを開始</button>
+    </section>
+  </div>
 
   <script src="app.js"></script>
 </body>

@@ -1,10 +1,14 @@
 const statusLog = [];
 const redoLog = [];
 const routineStorageKey = "bloom.video-editor.routines";
+const filterPreviewClasses = ["preview-warm", "preview-lavender", "preview-beige"];
 let routines = [];
+let exportTimer = null;
+
 const phones = document.querySelectorAll(".phone[data-view]");
-const viewButtons = document.querySelectorAll(".view-switcher [data-view-target]");
+const viewTargetButtons = document.querySelectorAll("[data-view-target]");
 const editorStatus = document.querySelector(".editor-caption");
+const editorPhoto = document.querySelector(".editor-photo");
 const historyList = document.querySelector(".history-list");
 const historyCount = document.querySelector(".history-count");
 const routineForm = document.querySelector(".routine-form");
@@ -12,6 +16,24 @@ const routineName = document.querySelector(".routine-name");
 const routineSave = document.querySelector(".routine-save");
 const routineList = document.querySelector(".routine-list");
 const routineCount = document.querySelector(".routine-count");
+const exportSheet = document.querySelector("[data-export-sheet]");
+const exportButton = document.querySelector(".js-export");
+const exportClose = document.querySelector(".sheet-close");
+const exportStart = document.querySelector(".export-start");
+const exportOptions = document.querySelectorAll(".export-option");
+const catalogTabs = document.querySelectorAll(".catalog-tab");
+const catalogSections = document.querySelectorAll("[data-catalog-section]");
+const selectableCards = document.querySelectorAll(".filter-card, .stamp-card, .title-card, .grade-card");
+const projectCards = document.querySelectorAll(".project-card");
+const templateItems = document.querySelectorAll(".template-item");
+
+function normalizeLabel(text) {
+  return text.trim().replace(/\s+/g, " ");
+}
+
+function getActionLabel(element) {
+  return element.dataset.actionLabel || normalizeLabel(element.innerText);
+}
 
 function switchView(viewName) {
   phones.forEach((phone) => {
@@ -20,7 +42,7 @@ function switchView(viewName) {
     phone.setAttribute("aria-hidden", String(!isActive));
   });
 
-  viewButtons.forEach((button) => {
+  viewTargetButtons.forEach((button) => {
     button.classList.toggle("active", button.dataset.viewTarget === viewName);
   });
 }
@@ -166,15 +188,110 @@ function applyRoutine(routine) {
   renderHistory();
 }
 
-document.querySelectorAll("[data-view-target]").forEach((button) => {
+function activateCatalogTab(tab) {
+  const targetName = tab.dataset.catalogTarget;
+  const targetSection = [...catalogSections].find((section) => section.dataset.catalogSection === targetName);
+
+  catalogTabs.forEach((item) => {
+    item.classList.toggle("active", item === tab);
+  });
+
+  if (targetSection) {
+    targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  pushAction(`${getActionLabel(tab)}を開いたよ`);
+}
+
+function makeSelectable(element) {
+  if (element.tagName !== "BUTTON") {
+    element.setAttribute("role", "button");
+    element.setAttribute("tabindex", "0");
+  }
+}
+
+function triggerKeyboardClick(element, event) {
+  if (event.key !== "Enter" && event.key !== " ") {
+    return;
+  }
+  event.preventDefault();
+  element.click();
+}
+
+function updateFilterSelection(card) {
+  document.querySelectorAll(".filter-card").forEach((item) => {
+    item.classList.toggle("active", item === card);
+    item.querySelector(".check")?.remove();
+  });
+
+  const check = document.createElement("span");
+  check.className = "check";
+  check.textContent = "✓";
+  card.querySelector(".filter-img")?.append(check);
+
+  editorPhoto.classList.remove(...filterPreviewClasses);
+  if (card.dataset.filter && card.dataset.filter !== "pink") {
+    editorPhoto.classList.add(`preview-${card.dataset.filter}`);
+  }
+}
+
+function selectCard(card) {
+  const label = getActionLabel(card);
+  const sameGroupCards = card.parentElement.querySelectorAll(".filter-card, .stamp-card, .title-card, .grade-card");
+
+  sameGroupCards.forEach((item) => {
+    item.classList.toggle("active", item === card);
+  });
+
+  if (card.classList.contains("filter-card")) {
+    updateFilterSelection(card);
+    pushAction(`${label}をプレビューにかけたよ`);
+    return;
+  }
+
+  pushAction(`${label}を追加したよ`);
+}
+
+function openExportSheet() {
+  exportSheet.hidden = false;
+  exportStart.disabled = false;
+  exportStart.textContent = "書き出しを開始";
+  setStatus("書き出し設定を開いたよ");
+  exportOptions[0]?.focus();
+}
+
+function closeExportSheet() {
+  exportSheet.hidden = true;
+  clearTimeout(exportTimer);
+}
+
+function selectExportQuality(option) {
+  exportOptions.forEach((item) => {
+    item.classList.toggle("active", item === option);
+  });
+  setStatus(`${option.dataset.quality}で書き出し準備中`);
+}
+
+function startExport() {
+  const quality = document.querySelector(".export-option.active")?.dataset.quality || "1080p";
+  exportStart.disabled = true;
+  exportStart.textContent = "書き出し中...";
+
+  clearTimeout(exportTimer);
+  exportTimer = setTimeout(() => {
+    exportStart.textContent = "保存しました";
+    pushAction(`${quality} MP4を書き出したよ`);
+  }, 650);
+}
+
+viewTargetButtons.forEach((button) => {
   button.addEventListener("click", () => {
     switchView(button.dataset.viewTarget);
   });
 });
 
-document.querySelectorAll(".tool-item, .editor-tool, .catalog-tab, .nav-item").forEach((button) => {
+document.querySelectorAll(".tool-item, .editor-tool, .see-all, .menu-icon, .help-btn, .add-clip").forEach((button) => {
   button.addEventListener("click", () => {
-    const label = button.innerText.trim().replace(/\s+/g, " ");
+    const label = getActionLabel(button);
     if (label) {
       pushAction(`${label}を選んだよ`);
     }
@@ -183,6 +300,38 @@ document.querySelectorAll(".tool-item, .editor-tool, .catalog-tab, .nav-item").f
 
 document.querySelector(".create-card").addEventListener("click", () => {
   pushAction("新しいプロジェクトを作る準備ができたよ");
+});
+
+projectCards.forEach((card) => {
+  makeSelectable(card);
+  card.addEventListener("click", () => {
+    switchView("editor");
+    pushAction(`${card.querySelector("strong").textContent}を開いたよ`);
+  });
+  card.addEventListener("keydown", (event) => triggerKeyboardClick(card, event));
+});
+
+templateItems.forEach((item) => {
+  makeSelectable(item);
+  item.addEventListener("click", () => {
+    switchView("editor");
+    pushAction(`${getActionLabel(item)}テンプレートを使う準備ができたよ`);
+  });
+  item.addEventListener("keydown", (event) => triggerKeyboardClick(item, event));
+});
+
+catalogTabs.forEach((tab) => {
+  tab.addEventListener("click", () => activateCatalogTab(tab));
+});
+
+selectableCards.forEach((card) => {
+  makeSelectable(card);
+  card.addEventListener("click", () => selectCard(card));
+  card.addEventListener("keydown", (event) => triggerKeyboardClick(card, event));
+});
+
+document.querySelector(".search").addEventListener("click", () => {
+  setStatus("素材を検索できるよ");
 });
 
 document.querySelector(".js-play").addEventListener("click", () => {
@@ -209,6 +358,24 @@ document.querySelector(".js-redo").addEventListener("click", () => {
   statusLog.push(next);
   setStatus("もう一度やり直したよ");
   renderHistory();
+});
+
+exportButton.addEventListener("click", openExportSheet);
+exportClose.addEventListener("click", closeExportSheet);
+exportSheet.addEventListener("click", (event) => {
+  if (event.target === exportSheet) {
+    closeExportSheet();
+  }
+});
+exportOptions.forEach((option) => {
+  option.addEventListener("click", () => selectExportQuality(option));
+});
+exportStart.addEventListener("click", startExport);
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !exportSheet.hidden) {
+    closeExportSheet();
+  }
 });
 
 routineForm.addEventListener("submit", (event) => {
