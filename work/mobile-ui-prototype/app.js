@@ -2,8 +2,16 @@ const statusLog = [];
 const redoLog = [];
 const routineStorageKey = "bloom.video-editor.routines";
 const filterPreviewClasses = ["preview-warm", "preview-lavender", "preview-beige"];
+const photoStylePresets = {
+  natural: { brightness: 0, saturate: 0, sepia: 0, hue: 0, blur: 0 },
+  clear: { brightness: 6, saturate: -4, sepia: 0, hue: -8, blur: 0 },
+  soft: { brightness: 5, saturate: 2, sepia: 4, hue: 4, blur: 0.18 },
+  film: { brightness: -5, saturate: -12, sepia: 13, hue: -6, blur: 0 },
+};
 let routines = [];
 let exportTimer = null;
+let activeEditorMode = "video";
+let activePhotoStyle = "natural";
 
 const phones = document.querySelectorAll(".phone[data-view]");
 const viewTargetButtons = document.querySelectorAll("[data-view-target]");
@@ -26,6 +34,16 @@ const catalogSections = document.querySelectorAll("[data-catalog-section]");
 const selectableCards = document.querySelectorAll(".filter-card, .stamp-card, .title-card, .grade-card");
 const projectCards = document.querySelectorAll(".project-card");
 const templateItems = document.querySelectorAll(".template-item");
+const modeTabs = document.querySelectorAll(".mode-tab");
+const videoPanels = document.querySelectorAll("[data-video-panel]");
+const photoPanel = document.querySelector(".photo-adjust-panel");
+const photoSliders = document.querySelectorAll(".photo-slider");
+const photoStyleButtons = document.querySelectorAll(".style-chip");
+const photoActionButtons = document.querySelectorAll("[data-photo-action]");
+const beforeAfterButton = document.querySelector(".js-before-after");
+const dashboardKicker = document.querySelector(".dashboard-kicker");
+const scriptTitle = document.querySelector(".script-title");
+const dashboardMetrics = document.querySelectorAll(".dashboard-grid span");
 
 function normalizeLabel(text) {
   return text.trim().replace(/\s+/g, " ");
@@ -56,6 +74,62 @@ function pushAction(label) {
 
 function setStatus(label) {
   editorStatus.textContent = label;
+}
+
+function setDashboardLabels(modeName) {
+  dashboardKicker.textContent = modeName === "photo" ? "Photo Edit" : "Preview";
+  scriptTitle.textContent = modeName === "photo" ? "Bloom photo" : "Good day";
+  editorStatus.textContent = modeName === "photo" ? "写真をきれいに調整できます" : "読み込んだ素材をここで確認";
+
+  const labels = modeName === "photo"
+    ? ["明るさ", "美肌", "比率"]
+    : ["Beauty", "比較", "BGM"];
+  const captions = modeName === "photo"
+    ? ["light", "smooth", "crop"]
+    : ["natural", "before", "audio"];
+
+  dashboardMetrics.forEach((metric, index) => {
+    metric.innerHTML = `<b>${labels[index]}</b>${captions[index]}`;
+  });
+}
+
+function setEditorMode(modeName) {
+  activeEditorMode = modeName;
+  const isPhotoMode = modeName === "photo";
+
+  modeTabs.forEach((tab) => {
+    const isActive = tab.dataset.editorMode === modeName;
+    tab.classList.toggle("active", isActive);
+    tab.setAttribute("aria-selected", String(isActive));
+  });
+
+  videoPanels.forEach((panel) => {
+    panel.hidden = isPhotoMode;
+  });
+  photoPanel.hidden = !isPhotoMode;
+  editorPhoto.classList.toggle("photo-mode", isPhotoMode);
+  editorPhoto.classList.remove("photo-original");
+  setDashboardLabels(modeName);
+  updatePhotoFilter();
+}
+
+function updatePhotoFilter() {
+  const values = [...photoSliders].reduce((result, slider) => {
+    result[slider.dataset.filter] = Number(slider.value);
+    return result;
+  }, {});
+  const preset = photoStylePresets[activePhotoStyle] || photoStylePresets.natural;
+  const brightness = 1 + ((values.brightness || 0) + preset.brightness) / 100;
+  const saturate = 1 + ((values.clarity || 0) + preset.saturate) / 100;
+  const sepia = Math.max(0, ((values.warmth || 0) + preset.sepia) / 100);
+  const hue = (values.warmth || 0) * 0.6 + preset.hue;
+  const blur = Math.max(0, ((values.smooth || 0) / 120) + preset.blur);
+
+  editorPhoto.style.setProperty("--photo-brightness", brightness.toFixed(2));
+  editorPhoto.style.setProperty("--photo-saturate", saturate.toFixed(2));
+  editorPhoto.style.setProperty("--photo-sepia", sepia.toFixed(2));
+  editorPhoto.style.setProperty("--photo-hue", `${hue.toFixed(1)}deg`);
+  editorPhoto.style.setProperty("--photo-blur", `${blur.toFixed(2)}px`);
 }
 
 function renderHistory() {
@@ -285,12 +359,25 @@ function startExport() {
 
 viewTargetButtons.forEach((button) => {
   button.addEventListener("click", () => {
+    if (button.dataset.startMode) {
+      setEditorMode(button.dataset.startMode);
+    }
     switchView(button.dataset.viewTarget);
+  });
+});
+
+modeTabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    setEditorMode(tab.dataset.editorMode);
+    pushAction(`${getActionLabel(tab)}編集に切り替えたよ`);
   });
 });
 
 document.querySelectorAll(".tool-item, .editor-tool, .see-all, .menu-icon, .help-btn, .add-clip").forEach((button) => {
   button.addEventListener("click", () => {
+    if (button.dataset.photoAction && activeEditorMode !== "photo") {
+      setEditorMode("photo");
+    }
     const label = getActionLabel(button);
     if (label) {
       pushAction(`${label}を選んだよ`);
@@ -314,10 +401,52 @@ projectCards.forEach((card) => {
 templateItems.forEach((item) => {
   makeSelectable(item);
   item.addEventListener("click", () => {
+    if (item.dataset.startMode) {
+      setEditorMode(item.dataset.startMode);
+    }
     switchView("editor");
     pushAction(`${getActionLabel(item)}を開いたよ`);
   });
   item.addEventListener("keydown", (event) => triggerKeyboardClick(item, event));
+});
+
+photoActionButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    if (button.classList.contains("editor-tool")) {
+      return;
+    }
+    button.parentElement.querySelectorAll("[data-photo-action]").forEach((item) => {
+      item.classList.toggle("active", item === button);
+    });
+    setEditorMode("photo");
+    pushAction(`${button.dataset.photoAction}を調整したよ`);
+  });
+});
+
+photoSliders.forEach((slider) => {
+  slider.addEventListener("input", () => {
+    updatePhotoFilter();
+    setStatus("写真の見え方を調整中");
+  });
+  slider.addEventListener("change", () => {
+    pushAction(`${slider.closest("label").querySelector("span").textContent}を調整したよ`);
+  });
+});
+
+photoStyleButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    activePhotoStyle = button.dataset.photoStyle;
+    photoStyleButtons.forEach((item) => {
+      item.classList.toggle("active", item === button);
+    });
+    setEditorMode("photo");
+    pushAction(`${getActionLabel(button)}スタイルを選んだよ`);
+  });
+});
+
+beforeAfterButton.addEventListener("click", () => {
+  editorPhoto.classList.toggle("photo-original");
+  setStatus(editorPhoto.classList.contains("photo-original") ? "補正前を表示中" : "補正後を表示中");
 });
 
 catalogTabs.forEach((tab) => {
@@ -386,4 +515,5 @@ routineForm.addEventListener("submit", (event) => {
 loadRoutines();
 renderHistory();
 renderRoutines();
+setEditorMode("video");
 switchView("home");
