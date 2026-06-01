@@ -24,6 +24,8 @@ let videoTrimStart = 0;
 let videoTrimEnd = 32;
 let mediaObjectUrl = null;
 let mediaObjectUrlIsLocal = false;
+let activeVideoUrl = "";
+let activeVideoName = "動画";
 let videoExportRecorder = null;
 let videoExportStopTimer = null;
 let isVideoExporting = false;
@@ -297,6 +299,8 @@ function setVideoSource(src, label, isLocalObjectUrl = false) {
   revokeMediaUrl();
   mediaObjectUrl = src;
   mediaObjectUrlIsLocal = isLocalObjectUrl;
+  activeVideoUrl = isLocalObjectUrl ? "" : src;
+  activeVideoName = label || "動画";
   previewVideo.onloadedmetadata = () => {
     activeVideoDuration = Number.isFinite(previewVideo.duration) ? previewVideo.duration : 32;
     videoTrimStart = 0;
@@ -378,6 +382,49 @@ function getSupportedRecordingType() {
   return recordingTypes.find((type) => MediaRecorder.isTypeSupported(type)) || "";
 }
 
+async function exportTrimmedVideoWithHelper() {
+  if (!activeVideoUrl) {
+    return false;
+  }
+
+  trimExportButton.disabled = true;
+  trimExportButton.textContent = "ffmpegで書き出し中...";
+  setStatus("ローカルffmpegで範囲を書き出しています");
+
+  try {
+    const response = await fetch("http://127.0.0.1:4175/export", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        videoUrl: activeVideoUrl,
+        videoName: activeVideoName,
+        start: videoTrimStart,
+        end: videoTrimEnd,
+      }),
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      throw new Error(payload.error || "ローカルffmpeg書き出しに失敗しました");
+    }
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.download = `${activeVideoName.replace(/\.[^.]+$/, "")}-trim-${Date.now()}.mp4`;
+    link.href = url;
+    link.click();
+    URL.revokeObjectURL(url);
+    pushAction(`${formatTime(videoTrimStart)}-${formatTime(videoTrimEnd)}をffmpegで書き出しました`);
+    resetTrimExportButton();
+    return true;
+  } catch (error) {
+    setStatus(error.message || "ローカルffmpeg書き出しに失敗しました");
+    resetTrimExportButton();
+    return false;
+  }
+}
+
 function resetTrimExportButton() {
   isVideoExporting = false;
   videoExportFailed = false;
@@ -444,6 +491,9 @@ async function exportTrimmedVideo() {
   const canCaptureCanvas = Boolean(HTMLCanvasElement.prototype.captureStream);
   const canCaptureVideo = Boolean(previewVideo.captureStream || previewVideo.mozCaptureStream);
   if (!window.MediaRecorder || (!canCaptureVideo && !canCaptureCanvas)) {
+    if (await exportTrimmedVideoWithHelper()) {
+      return;
+    }
     setStatus("このブラウザでは動画の書き出しに対応していません");
     return;
   }
@@ -509,6 +559,9 @@ async function exportTrimmedVideo() {
       videoExportRecorder.stop();
     }
     exportStream?.cleanup();
+    if (await exportTrimmedVideoWithHelper()) {
+      return;
+    }
     setStatus("動画の書き出しを開始できませんでした");
     resetTrimExportButton();
   }
