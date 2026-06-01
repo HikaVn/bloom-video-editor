@@ -68,7 +68,8 @@ function loadRoutines() {
           ...routine,
           actions: routine.actions.filter((action) => typeof action === "string"),
         }))
-        .filter((routine) => routine.actions.length);
+        .filter((routine) => routine.actions.length)
+        .slice(0, 5);
     }
   } catch {
     routines = [];
