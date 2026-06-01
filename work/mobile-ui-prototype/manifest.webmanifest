@@ -1,0 +1,19 @@
+{
+  "name": "Bloom Editor",
+  "short_name": "Bloom",
+  "description": "写真と動画をかんたんに仕上げる編集アプリ",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fffaf8",
+  "theme_color": "#ff8fa6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/bloom-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

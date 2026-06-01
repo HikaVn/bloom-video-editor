@@ -12,6 +12,8 @@ let routines = [];
 let exportTimer = null;
 let activeEditorMode = "video";
 let activePhotoStyle = "natural";
+let activePhotoFilter = "none";
+let mediaObjectUrl = null;
 
 const phones = document.querySelectorAll(".phone[data-view]");
 const viewTargetButtons = document.querySelectorAll("[data-view-target]");
@@ -45,6 +47,11 @@ const beforeAfterButton = document.querySelector(".js-before-after");
 const dashboardKicker = document.querySelector(".dashboard-kicker");
 const scriptTitle = document.querySelector(".script-title");
 const dashboardMetrics = document.querySelectorAll(".dashboard-grid span");
+const mediaInput = document.querySelector(".media-input");
+const previewImage = document.querySelector(".preview-image");
+const previewVideo = document.querySelector(".preview-video");
+const importButtons = document.querySelectorAll("[data-import-media]");
+const savePhotoButton = document.querySelector(".save-photo");
 
 function normalizeLabel(text) {
   return text.trim().replace(/\s+/g, " ");
@@ -125,12 +132,103 @@ function updatePhotoFilter() {
   const sepia = Math.max(0, ((values.warmth || 0) + preset.sepia) / 100);
   const hue = (values.warmth || 0) * 0.6 + preset.hue;
   const blur = Math.max(0, ((values.smooth || 0) / 120) + preset.blur);
+  activePhotoFilter = [
+    `brightness(${brightness.toFixed(2)})`,
+    `saturate(${saturate.toFixed(2)})`,
+    `sepia(${sepia.toFixed(2)})`,
+    `hue-rotate(${hue.toFixed(1)}deg)`,
+    `blur(${blur.toFixed(2)}px)`,
+  ].join(" ");
 
   editorPhoto.style.setProperty("--photo-brightness", brightness.toFixed(2));
   editorPhoto.style.setProperty("--photo-saturate", saturate.toFixed(2));
   editorPhoto.style.setProperty("--photo-sepia", sepia.toFixed(2));
   editorPhoto.style.setProperty("--photo-hue", `${hue.toFixed(1)}deg`);
   editorPhoto.style.setProperty("--photo-blur", `${blur.toFixed(2)}px`);
+}
+
+function revokeMediaUrl() {
+  if (mediaObjectUrl) {
+    URL.revokeObjectURL(mediaObjectUrl);
+    mediaObjectUrl = null;
+  }
+}
+
+function openMediaPicker(mediaType) {
+  const targetType = mediaType === "current" ? activeEditorMode : mediaType;
+  mediaInput.dataset.mediaType = targetType;
+  mediaInput.accept = targetType === "video" ? "image/*,video/*" : "image/*";
+  mediaInput.value = "";
+  mediaInput.click();
+}
+
+function showImagePreview(file) {
+  revokeMediaUrl();
+  mediaObjectUrl = URL.createObjectURL(file);
+  previewImage.src = mediaObjectUrl;
+  previewImage.hidden = false;
+  previewVideo.hidden = true;
+  previewVideo.removeAttribute("src");
+  previewVideo.load();
+  editorPhoto.classList.add("has-media");
+  editorPhoto.classList.remove("has-video", "photo-original");
+  savePhotoButton.disabled = false;
+  setEditorMode("photo");
+  setStatus(`${file.name}を読み込みました`);
+}
+
+function showVideoPreview(file) {
+  revokeMediaUrl();
+  mediaObjectUrl = URL.createObjectURL(file);
+  previewVideo.src = mediaObjectUrl;
+  previewVideo.hidden = false;
+  previewImage.hidden = true;
+  previewImage.removeAttribute("src");
+  editorPhoto.classList.add("has-media", "has-video");
+  editorPhoto.classList.remove("photo-original");
+  savePhotoButton.disabled = true;
+  setEditorMode("video");
+  setStatus(`${file.name}を読み込みました`);
+}
+
+function handleMediaFile(file) {
+  if (!file) {
+    return;
+  }
+
+  if (file.type.startsWith("image/")) {
+    showImagePreview(file);
+    pushAction("写真を読み込みました");
+    return;
+  }
+
+  if (file.type.startsWith("video/")) {
+    showVideoPreview(file);
+    pushAction("動画を読み込みました");
+    return;
+  }
+
+  setStatus("写真または動画ファイルを選んでください");
+}
+
+function saveEditedPhoto() {
+  if (previewImage.hidden || !previewImage.complete || !previewImage.naturalWidth) {
+    setStatus("先に写真を選んでください");
+    return;
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = previewImage.naturalWidth;
+  canvas.height = previewImage.naturalHeight;
+  const context = canvas.getContext("2d");
+  context.filter = editorPhoto.classList.contains("photo-original") ? "none" : activePhotoFilter;
+  context.drawImage(previewImage, 0, 0, canvas.width, canvas.height);
+
+  const link = document.createElement("a");
+  link.download = `bloom-photo-${Date.now()}.png`;
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+  pushAction("編集した写真を保存しました");
 }
 
 function renderHistory() {
@@ -391,6 +489,18 @@ document.querySelectorAll(".tool-item, .editor-tool, .see-all, .menu-icon, .help
     }
   });
 });
+
+importButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    openMediaPicker(button.dataset.importMedia);
+  });
+});
+
+mediaInput.addEventListener("change", () => {
+  handleMediaFile(mediaInput.files[0]);
+});
+
+savePhotoButton.addEventListener("click", saveEditedPhoto);
 
 createCards.forEach((card) => {
   card.addEventListener("click", () => {

@@ -20,6 +20,11 @@ body {
   margin: 0;
   color: var(--ink);
   min-height: 100vh;
+  padding:
+    max(0px, env(safe-area-inset-top))
+    max(0px, env(safe-area-inset-right))
+    max(0px, env(safe-area-inset-bottom))
+    max(0px, env(safe-area-inset-left));
   background:
     radial-gradient(circle at 12% 14%, rgba(255, 255, 255, 0.92) 0 8%, transparent 23%),
     radial-gradient(circle at 83% 82%, rgba(255, 255, 255, 0.88) 0 7%, transparent 23%),
@@ -725,6 +730,36 @@ p {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.36);
 }
 
+.preview-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.preview-media[hidden] {
+  display: none;
+}
+
+.editor-photo.has-media .preview-image {
+  filter:
+    brightness(var(--photo-brightness))
+    saturate(var(--photo-saturate))
+    sepia(var(--photo-sepia))
+    hue-rotate(var(--photo-hue))
+    blur(var(--photo-blur));
+}
+
+.editor-photo.has-video .preview-video {
+  display: block;
+}
+
+.editor-photo.has-media.photo-original .preview-image {
+  filter: none;
+}
+
 .editor-photo.photo-mode {
   filter:
     brightness(var(--photo-brightness))
@@ -732,6 +767,10 @@ p {
     sepia(var(--photo-sepia))
     hue-rotate(var(--photo-hue))
     blur(var(--photo-blur));
+}
+
+.editor-photo.has-media.photo-mode {
+  filter: none;
 }
 
 .editor-photo.photo-mode .dashboard-grid span:nth-child(3) {
@@ -768,6 +807,20 @@ p {
   background: rgba(255, 255, 255, 0.74);
   font-size: 10px;
   font-weight: 900;
+}
+
+.editor-photo.has-media .dashboard-kicker,
+.editor-photo.has-media .script-title,
+.editor-photo.has-media .dashboard-grid {
+  display: none;
+}
+
+.editor-photo.has-media .editor-caption {
+  padding: 6px 9px;
+  width: max-content;
+  max-width: calc(100% - 48px);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.36);
 }
 
 .feature-dashboard .script-title,
@@ -915,6 +968,34 @@ p {
   color: #f8f2f5;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.import-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.import-button,
+.save-photo {
+  min-height: 38px;
+  border-radius: 11px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.import-button {
+  background: linear-gradient(135deg, #ff8397, #79c6c2);
+  border-color: transparent;
+}
+
+.save-photo:disabled {
+  color: #aaa4a8;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .photo-adjust-panel[hidden],

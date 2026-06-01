@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bloom Editor</title>
+  <meta name="theme-color" content="#ff8fa6" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Bloom" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/bloom-icon.svg" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -123,6 +129,8 @@
             </div>
 
             <section class="editor-photo feature-dashboard">
+              <img class="preview-media preview-image" alt="読み込んだ写真" hidden />
+              <video class="preview-media preview-video" hidden muted playsinline controls></video>
               <div class="dashboard-kicker">Preview</div>
               <div class="script-title">Good day</div>
               <div class="editor-caption">読み込んだ素材をここで確認</div>
@@ -145,6 +153,10 @@
             </div>
 
             <div class="photo-adjust-panel" hidden>
+              <div class="import-actions">
+                <button class="import-button" type="button" data-import-media="photo">写真を選ぶ</button>
+                <button class="save-photo" type="button" disabled>写真を保存</button>
+              </div>
               <div class="quick-row" aria-label="写真の比率">
                 <button class="quick-chip active" type="button" data-photo-action="比率 1:1">1:1</button>
                 <button class="quick-chip" type="button" data-photo-action="比率 4:5">4:5</button>
@@ -203,7 +215,7 @@
         </div>
 
         <nav class="editor-tools">
-          <button class="editor-tool" type="button" data-action-label="素材"><b>＋</b><span>素材</span></button>
+          <button class="editor-tool" type="button" data-action-label="素材" data-import-media="current"><b>＋</b><span>素材</span></button>
           <button class="editor-tool" type="button" data-photo-action="調整" data-action-label="調整"><b>☼</b><span>調整</span></button>
           <button class="editor-tool" type="button" data-photo-action="切り抜き" data-action-label="切り抜き"><b>□</b><span>切抜き</span></button>
           <button class="editor-tool" type="button" data-action-label="文字"><b>T</b><span>文字</span></button>
@@ -337,6 +349,14 @@
     </section>
   </div>
 
+  <input class="media-input" type="file" accept="image/*,video/*" hidden />
   <script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js").catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>
