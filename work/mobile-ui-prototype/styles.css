@@ -963,7 +963,8 @@ p {
   padding-top: 9px;
 }
 
-.photo-adjust-panel {
+.photo-adjust-panel,
+.video-edit-panel {
   display: grid;
   gap: 12px;
   padding: 13px;
@@ -995,6 +996,18 @@ p {
   border-color: transparent;
 }
 
+.video-duration {
+  min-height: 38px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  color: #f8f2f5;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 11px;
+  font-weight: 900;
+}
+
 .save-photo:disabled {
   color: #aaa4a8;
   cursor: not-allowed;
@@ -1004,6 +1017,35 @@ p {
 .photo-adjust-panel[hidden],
 [data-video-panel][hidden] {
   display: none;
+}
+
+.video-trim-list {
+  display: grid;
+  gap: 10px;
+}
+
+.video-trim-list label {
+  display: grid;
+  gap: 7px;
+  color: #f1eef0;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.video-trim-list span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.video-trim-list b {
+  color: #ffb8c6;
+  font-size: 11px;
+}
+
+.video-trim-slider {
+  width: 100%;
+  accent-color: #ff8fa6;
 }
 
 .quick-row,

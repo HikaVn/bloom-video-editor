@@ -19,6 +19,9 @@ let activeEditorMode = "video";
 let activePhotoStyle = "natural";
 let activePhotoFilter = "none";
 let activePhotoRatio = "1:1";
+let activeVideoDuration = 32;
+let videoTrimStart = 0;
+let videoTrimEnd = 32;
 let mediaObjectUrl = null;
 
 const phones = document.querySelectorAll(".phone[data-view]");
@@ -58,6 +61,10 @@ const previewImage = document.querySelector(".preview-image");
 const previewVideo = document.querySelector(".preview-video");
 const importButtons = document.querySelectorAll("[data-import-media]");
 const savePhotoButton = document.querySelector(".save-photo");
+const videoDurationLabel = document.querySelector(".video-duration");
+const videoTrimSliders = document.querySelectorAll(".video-trim-slider");
+const videoTrimStartLabel = document.querySelector(".video-trim-start");
+const videoTrimEndLabel = document.querySelector(".video-trim-end");
 
 function normalizeLabel(text) {
   return text.trim().replace(/\s+/g, " ");
@@ -183,6 +190,36 @@ function getCenteredCrop(sourceWidth, sourceHeight) {
   };
 }
 
+function formatTime(seconds) {
+  const safeSeconds = Math.max(0, Number.isFinite(seconds) ? seconds : 0);
+  const minutes = Math.floor(safeSeconds / 60);
+  const remainingSeconds = Math.floor(safeSeconds % 60);
+  return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+}
+
+function updateVideoTrimDisplay() {
+  videoTrimStartLabel.textContent = formatTime(videoTrimStart);
+  videoTrimEndLabel.textContent = formatTime(videoTrimEnd);
+  videoTrimSliders.forEach((slider) => {
+    slider.max = activeVideoDuration.toFixed(1);
+    slider.disabled = previewVideo.hidden || !activeVideoDuration;
+    slider.value = slider.dataset.videoTrim === "start" ? videoTrimStart : videoTrimEnd;
+  });
+  videoDurationLabel.textContent = previewVideo.hidden
+    ? "動画を選んでください"
+    : `長さ ${formatTime(activeVideoDuration)}`;
+}
+
+function setVideoTrim(kind, value) {
+  const nextValue = Math.min(activeVideoDuration, Math.max(0, Number(value) || 0));
+  if (kind === "start") {
+    videoTrimStart = Math.min(nextValue, Math.max(0, videoTrimEnd - 0.2));
+  } else {
+    videoTrimEnd = Math.max(nextValue, Math.min(activeVideoDuration, videoTrimStart + 0.2));
+  }
+  updateVideoTrimDisplay();
+}
+
 function revokeMediaUrl() {
   if (mediaObjectUrl) {
     URL.revokeObjectURL(mediaObjectUrl);
@@ -216,6 +253,13 @@ function showImagePreview(file) {
 function showVideoPreview(file) {
   revokeMediaUrl();
   mediaObjectUrl = URL.createObjectURL(file);
+  previewVideo.onloadedmetadata = () => {
+    activeVideoDuration = Number.isFinite(previewVideo.duration) ? previewVideo.duration : 32;
+    videoTrimStart = 0;
+    videoTrimEnd = activeVideoDuration;
+    updateVideoTrimDisplay();
+    setStatus(`${file.name}を読み込みました`);
+  };
   previewVideo.src = mediaObjectUrl;
   previewVideo.hidden = false;
   previewImage.hidden = true;
@@ -224,7 +268,6 @@ function showVideoPreview(file) {
   editorPhoto.classList.remove("photo-original");
   savePhotoButton.disabled = true;
   setEditorMode("video");
-  setStatus(`${file.name}を読み込みました`);
 }
 
 function handleMediaFile(file) {
@@ -266,6 +309,17 @@ function saveEditedPhoto() {
   link.href = canvas.toDataURL("image/png");
   link.click();
   pushAction(`${activePhotoRatio}で写真を保存しました`);
+}
+
+function playPreview() {
+  if (!previewVideo.hidden && previewVideo.src) {
+    previewVideo.currentTime = videoTrimStart;
+    previewVideo.play();
+    pushAction(`${formatTime(videoTrimStart)}-${formatTime(videoTrimEnd)}を再生中`);
+    return;
+  }
+
+  pushAction("プレビュー再生中");
 }
 
 function renderHistory() {
@@ -539,6 +593,23 @@ mediaInput.addEventListener("change", () => {
 
 savePhotoButton.addEventListener("click", saveEditedPhoto);
 
+videoTrimSliders.forEach((slider) => {
+  slider.addEventListener("input", () => {
+    setVideoTrim(slider.dataset.videoTrim, slider.value);
+    setStatus("動画の再生範囲を調整中");
+  });
+  slider.addEventListener("change", () => {
+    pushAction(`動画を${formatTime(videoTrimStart)}-${formatTime(videoTrimEnd)}にしました`);
+  });
+});
+
+previewVideo.addEventListener("timeupdate", () => {
+  if (!previewVideo.paused && previewVideo.currentTime >= videoTrimEnd) {
+    previewVideo.pause();
+    previewVideo.currentTime = videoTrimStart;
+  }
+});
+
 createCards.forEach((card) => {
   card.addEventListener("click", () => {
     pushAction(`${getActionLabel(card)}を始める準備ができたよ`);
@@ -622,9 +693,7 @@ document.querySelector(".search").addEventListener("click", () => {
   setStatus("テンプレートや素材を検索できるよ");
 });
 
-document.querySelector(".js-play").addEventListener("click", () => {
-  pushAction("プレビュー再生中");
-});
+document.querySelector(".js-play").addEventListener("click", playPreview);
 
 document.querySelector(".js-undo").addEventListener("click", () => {
   const last = statusLog.pop();
@@ -675,5 +744,6 @@ loadRoutines();
 renderHistory();
 renderRoutines();
 setPhotoRatio(activePhotoRatio);
+updateVideoTrimDisplay();
 setEditorMode("video");
 switchView("home");

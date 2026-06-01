@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icons/bloom-icon.svg" />
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="stylesheet" href="styles.css?v=4" />
 </head>
 <body>
   <main class="stage">
@@ -149,6 +149,23 @@
               <button class="play-btn js-play" type="button" title="再生">▶</button>
               <div class="control-pair" style="justify-content: flex-end;">
                 <button class="control-btn js-before-after" type="button" title="Before / After" style="font-size: 11px;">B/A</button>
+              </div>
+            </div>
+
+            <div class="video-edit-panel" data-video-panel>
+              <div class="import-actions">
+                <button class="import-button" type="button" data-import-media="video">動画を選ぶ</button>
+                <span class="video-duration">動画を選んでください</span>
+              </div>
+              <div class="video-trim-list">
+                <label>
+                  <span>開始 <b class="video-trim-start">00:00</b></span>
+                  <input class="video-trim-slider" type="range" min="0" max="32" step="0.1" value="0" data-video-trim="start" disabled />
+                </label>
+                <label>
+                  <span>終了 <b class="video-trim-end">00:32</b></span>
+                  <input class="video-trim-slider" type="range" min="0" max="32" step="0.1" value="32" data-video-trim="end" disabled />
+                </label>
               </div>
             </div>
 
@@ -350,7 +367,7 @@
   </div>
 
   <input class="media-input" type="file" accept="image/*,video/*" hidden />
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=4"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
