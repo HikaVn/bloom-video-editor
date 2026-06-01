@@ -33,11 +33,18 @@
               <p>今日の思い出を、やわらかい雰囲気の動画に仕上げましょう。</p>
             </section>
 
-            <button class="create-card" type="button" data-view-target="editor">
-              <span class="create-plus">＋</span>
-              <span><strong>写真・動画を編集</strong><span>素材を選んで、すぐ仕上げる</span></span>
-              <span style="font-size: 30px;">›</span>
-            </button>
+            <div class="create-actions" aria-label="作成を始める">
+              <button class="create-card video-create" type="button" data-view-target="editor" data-start-mode="video" data-action-label="動画作成">
+                <span class="create-media-icon"><span class="media-badge media-video" aria-label="動画"></span></span>
+                <span><strong>動画を作る</strong><span>カット・字幕・音楽を編集</span></span>
+                <span class="create-arrow">›</span>
+              </button>
+              <button class="create-card photo-create" type="button" data-view-target="editor" data-start-mode="photo" data-action-label="写真編集">
+                <span class="create-media-icon"><span class="media-badge media-photo" aria-label="写真"></span></span>
+                <span><strong>写真を編集</strong><span>明るさ・美肌・比率を調整</span></span>
+                <span class="create-arrow">›</span>
+              </button>
+            </div>
 
             <section>
               <div class="section-head">
@@ -66,11 +73,11 @@
                 <button class="see-all" type="button">テンプレートを見る ›</button>
               </div>
               <div class="template-row">
-                <div class="template-item" data-action-label="新規作成"><div class="template-icon">＋</div><span>新規</span></div>
-                <div class="template-item" data-start-mode="photo" data-action-label="写真編集"><div class="template-icon">▧</div><span>写真編集</span></div>
-                <div class="template-item" data-action-label="字幕付き動画"><div class="template-icon">CC</div><span>字幕付き</span></div>
-                <div class="template-item" data-action-label="Beauty動画"><div class="template-icon">♡</div><span>Beauty動画</span></div>
-                <div class="template-item" data-action-label="前回設定"><div class="template-icon">↻</div><span>前回設定</span></div>
+                <div class="template-item" data-start-mode="video" data-action-label="新規作成"><div class="template-icon">＋<span class="media-badge media-video" aria-label="動画"></span></div><span>新規</span></div>
+                <div class="template-item" data-start-mode="photo" data-action-label="写真編集"><div class="template-icon">▧<span class="media-badge media-photo" aria-label="写真"></span></div><span>写真編集</span></div>
+                <div class="template-item" data-start-mode="video" data-action-label="字幕付き動画"><div class="template-icon">CC<span class="media-badge media-video" aria-label="動画"></span></div><span>字幕付き</span></div>
+                <div class="template-item" data-start-mode="video" data-action-label="Beauty動画"><div class="template-icon">♡<span class="media-badge media-video" aria-label="動画"></span></div><span>Beauty動画</span></div>
+                <div class="template-item" data-start-mode="video" data-action-label="前回設定"><div class="template-icon">↻<span class="media-badge media-video" aria-label="動画"></span></div><span>前回設定</span></div>
               </div>
             </section>
 
@@ -79,14 +86,14 @@
                 <h2>おすすめテンプレート</h2>
               </div>
               <div class="tool-grid">
-                <button class="tool-item" type="button" data-view-target="effects" data-action-label="人気テンプレート"><span class="tool-icon">▣</span><span>人気テンプレ</span></button>
-                <button class="tool-item" type="button" data-view-target="editor" data-start-mode="photo" data-action-label="写真投稿"><span class="tool-icon">□</span><span>写真投稿</span></button>
-                <button class="tool-item" type="button" data-action-label="Reels"><span class="tool-icon">9:16</span><span>Reels</span></button>
-                <button class="tool-item" type="button" data-action-label="Shorts"><span class="tool-icon">▶</span><span>Shorts</span></button>
-                <button class="tool-item" type="button" data-action-label="Beauty補正"><span class="tool-icon">♡</span><span>Beauty</span></button>
-                <button class="tool-item" type="button" data-action-label="字幕付き"><span class="tool-icon">CC</span><span>字幕付き</span></button>
-                <button class="tool-item" type="button" data-action-label="前回設定"><span class="tool-icon">↻</span><span>前回設定</span></button>
-                <button class="tool-item" type="button" data-action-label="SNS保存"><span class="tool-icon">⇧</span><span>SNS保存</span></button>
+                <button class="tool-item" type="button" data-view-target="effects" data-action-label="人気テンプレート"><span class="tool-icon">▣<span class="media-badge media-video" aria-label="動画"></span></span><span>人気テンプレ</span></button>
+                <button class="tool-item" type="button" data-view-target="editor" data-start-mode="photo" data-action-label="写真投稿"><span class="tool-icon">□<span class="media-badge media-photo" aria-label="写真"></span></span><span>写真投稿</span></button>
+                <button class="tool-item" type="button" data-start-mode="video" data-action-label="Reels"><span class="tool-icon">9:16<span class="media-badge media-video" aria-label="動画"></span></span><span>Reels</span></button>
+                <button class="tool-item" type="button" data-start-mode="video" data-action-label="Shorts"><span class="tool-icon">▶<span class="media-badge media-video" aria-label="動画"></span></span><span>Shorts</span></button>
+                <button class="tool-item" type="button" data-start-mode="photo" data-action-label="Beauty補正"><span class="tool-icon">♡<span class="media-badge media-photo" aria-label="写真"></span></span><span>Beauty</span></button>
+                <button class="tool-item" type="button" data-start-mode="video" data-action-label="字幕付き"><span class="tool-icon">CC<span class="media-badge media-video" aria-label="動画"></span></span><span>字幕付き</span></button>
+                <button class="tool-item" type="button" data-start-mode="video" data-action-label="前回設定"><span class="tool-icon">↻<span class="media-badge media-video" aria-label="動画"></span></span><span>前回設定</span></button>
+                <button class="tool-item" type="button" data-start-mode="video" data-action-label="SNS保存"><span class="tool-icon">⇧<span class="media-badge media-video" aria-label="動画"></span></span><span>SNS保存</span></button>
               </div>
             </section>
           </div>
@@ -228,10 +235,10 @@
                 <button class="see-all" type="button">おすすめ ›</button>
               </div>
               <div class="filter-row">
-                <div class="filter-card active" role="button" tabindex="0" data-action-label="写真投稿テンプレート"><div class="filter-img feature-tile"><strong>Photo</strong><small>1枚投稿</small><span class="check">✓</span></div><span>写真投稿</span></div>
-                <div class="filter-card" role="button" tabindex="0" data-action-label="Reelsテンプレート"><div class="filter-img feature-tile"><strong>Reels</strong><small>9:16動画</small></div><span>Reels</span></div>
-                <div class="filter-card" role="button" tabindex="0" data-action-label="字幕つきテンプレート"><div class="filter-img feature-tile"><strong>Caption</strong><small>字幕つき</small></div><span>字幕付き</span></div>
-                <div class="filter-card" role="button" tabindex="0" data-action-label="Beauty投稿テンプレート"><div class="filter-img feature-tile"><strong>Beauty</strong><small>補正つき</small></div><span>Beauty</span></div>
+                <div class="filter-card active" role="button" tabindex="0" data-action-label="写真投稿テンプレート"><div class="filter-img feature-tile"><span class="media-badge media-photo" aria-label="写真"></span><strong>Photo</strong><small>1枚投稿</small><span class="check">✓</span></div><span>写真投稿</span></div>
+                <div class="filter-card" role="button" tabindex="0" data-action-label="Reelsテンプレート"><div class="filter-img feature-tile"><span class="media-badge media-video" aria-label="動画"></span><strong>Reels</strong><small>9:16動画</small></div><span>Reels</span></div>
+                <div class="filter-card" role="button" tabindex="0" data-action-label="字幕つきテンプレート"><div class="filter-img feature-tile"><span class="media-badge media-video" aria-label="動画"></span><strong>Caption</strong><small>字幕つき</small></div><span>字幕付き</span></div>
+                <div class="filter-card" role="button" tabindex="0" data-action-label="Beauty投稿テンプレート"><div class="filter-img feature-tile"><span class="media-badge media-photo" aria-label="写真"></span><strong>Beauty</strong><small>補正つき</small></div><span>Beauty</span></div>
               </div>
             </section>
 

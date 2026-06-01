@@ -34,6 +34,7 @@ const catalogSections = document.querySelectorAll("[data-catalog-section]");
 const selectableCards = document.querySelectorAll(".filter-card, .stamp-card, .title-card, .grade-card");
 const projectCards = document.querySelectorAll(".project-card");
 const templateItems = document.querySelectorAll(".template-item");
+const createCards = document.querySelectorAll(".create-card");
 const modeTabs = document.querySelectorAll(".mode-tab");
 const videoPanels = document.querySelectorAll("[data-video-panel]");
 const photoPanel = document.querySelector(".photo-adjust-panel");
@@ -375,6 +376,12 @@ modeTabs.forEach((tab) => {
 
 document.querySelectorAll(".tool-item, .editor-tool, .see-all, .menu-icon, .help-btn, .add-clip").forEach((button) => {
   button.addEventListener("click", () => {
+    if (button.dataset.startMode) {
+      setEditorMode(button.dataset.startMode);
+      if (button.classList.contains("tool-item") && !button.dataset.viewTarget) {
+        switchView("editor");
+      }
+    }
     if (button.dataset.photoAction && activeEditorMode !== "photo") {
       setEditorMode("photo");
     }
@@ -385,8 +392,10 @@ document.querySelectorAll(".tool-item, .editor-tool, .see-all, .menu-icon, .help
   });
 });
 
-document.querySelector(".create-card").addEventListener("click", () => {
-  pushAction("新しいプロジェクトを作る準備ができたよ");
+createCards.forEach((card) => {
+  card.addEventListener("click", () => {
+    pushAction(`${getActionLabel(card)}を始める準備ができたよ`);
+  });
 });
 
 projectCards.forEach((card) => {
