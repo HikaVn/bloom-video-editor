@@ -715,6 +715,7 @@ p {
   border-radius: 10px;
   overflow: hidden;
   position: relative;
+  --photo-aspect-ratio: 1 / 1;
   --photo-brightness: 1.06;
   --photo-saturate: 1.06;
   --photo-sepia: 0.03;
@@ -770,7 +771,9 @@ p {
 }
 
 .editor-photo.has-media.photo-mode {
+  aspect-ratio: var(--photo-aspect-ratio);
   filter: none;
+  min-height: auto;
 }
 
 .editor-photo.photo-mode .dashboard-grid span:nth-child(3) {

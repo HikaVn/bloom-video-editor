@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icons/bloom-icon.svg" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
   <main class="stage">
@@ -158,9 +158,9 @@
                 <button class="save-photo" type="button" disabled>写真を保存</button>
               </div>
               <div class="quick-row" aria-label="写真の比率">
-                <button class="quick-chip active" type="button" data-photo-action="比率 1:1">1:1</button>
-                <button class="quick-chip" type="button" data-photo-action="比率 4:5">4:5</button>
-                <button class="quick-chip" type="button" data-photo-action="比率 9:16">9:16</button>
+                <button class="quick-chip active" type="button" data-photo-action="比率 1:1" data-photo-ratio="1:1">1:1</button>
+                <button class="quick-chip" type="button" data-photo-action="比率 4:5" data-photo-ratio="4:5">4:5</button>
+                <button class="quick-chip" type="button" data-photo-action="比率 9:16" data-photo-ratio="9:16">9:16</button>
                 <button class="quick-chip" type="button" data-photo-action="傾き補正">傾き補正</button>
               </div>
               <div class="adjust-list">
@@ -350,7 +350,7 @@
   </div>
 
   <input class="media-input" type="file" accept="image/*,video/*" hidden />
-  <script src="app.js"></script>
+  <script src="app.js?v=3"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {

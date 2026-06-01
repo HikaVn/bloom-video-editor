@@ -1,4 +1,4 @@
-const CACHE_NAME = "bloom-editor-v1";
+const CACHE_NAME = "bloom-editor-v2";
 const APP_SHELL = [
   "./",
   "index.html",
@@ -28,8 +28,14 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request);
+    fetch(event.request).then((response) => {
+      const responseCopy = response.clone();
+      caches.open(CACHE_NAME).then((cache) => {
+        cache.put(event.request, responseCopy);
+      });
+      return response;
+    }).catch(() => {
+      return caches.match(event.request);
     })
   );
 });

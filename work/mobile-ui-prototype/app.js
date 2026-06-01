@@ -8,11 +8,17 @@ const photoStylePresets = {
   soft: { brightness: 5, saturate: 2, sepia: 4, hue: 4, blur: 0.18 },
   film: { brightness: -5, saturate: -12, sepia: 13, hue: -6, blur: 0 },
 };
+const photoRatios = {
+  "1:1": { width: 1, height: 1, css: "1 / 1" },
+  "4:5": { width: 4, height: 5, css: "4 / 5" },
+  "9:16": { width: 9, height: 16, css: "9 / 16" },
+};
 let routines = [];
 let exportTimer = null;
 let activeEditorMode = "video";
 let activePhotoStyle = "natural";
 let activePhotoFilter = "none";
+let activePhotoRatio = "1:1";
 let mediaObjectUrl = null;
 
 const phones = document.querySelectorAll(".phone[data-view]");
@@ -147,6 +153,36 @@ function updatePhotoFilter() {
   editorPhoto.style.setProperty("--photo-blur", `${blur.toFixed(2)}px`);
 }
 
+function setPhotoRatio(ratioName) {
+  const ratio = photoRatios[ratioName] || photoRatios["1:1"];
+  activePhotoRatio = photoRatios[ratioName] ? ratioName : "1:1";
+  editorPhoto.style.setProperty("--photo-aspect-ratio", ratio.css);
+}
+
+function getCenteredCrop(sourceWidth, sourceHeight) {
+  const ratio = photoRatios[activePhotoRatio] || photoRatios["1:1"];
+  const targetRatio = ratio.width / ratio.height;
+  const sourceRatio = sourceWidth / sourceHeight;
+
+  if (sourceRatio > targetRatio) {
+    const width = Math.round(sourceHeight * targetRatio);
+    return {
+      sx: Math.round((sourceWidth - width) / 2),
+      sy: 0,
+      sw: width,
+      sh: sourceHeight,
+    };
+  }
+
+  const height = Math.round(sourceWidth / targetRatio);
+  return {
+    sx: 0,
+    sy: Math.round((sourceHeight - height) / 2),
+    sw: sourceWidth,
+    sh: height,
+  };
+}
+
 function revokeMediaUrl() {
   if (mediaObjectUrl) {
     URL.revokeObjectURL(mediaObjectUrl);
@@ -218,17 +254,18 @@ function saveEditedPhoto() {
   }
 
   const canvas = document.createElement("canvas");
-  canvas.width = previewImage.naturalWidth;
-  canvas.height = previewImage.naturalHeight;
+  const crop = getCenteredCrop(previewImage.naturalWidth, previewImage.naturalHeight);
+  canvas.width = crop.sw;
+  canvas.height = crop.sh;
   const context = canvas.getContext("2d");
   context.filter = editorPhoto.classList.contains("photo-original") ? "none" : activePhotoFilter;
-  context.drawImage(previewImage, 0, 0, canvas.width, canvas.height);
+  context.drawImage(previewImage, crop.sx, crop.sy, crop.sw, crop.sh, 0, 0, canvas.width, canvas.height);
 
   const link = document.createElement("a");
   link.download = `bloom-photo-${Date.now()}.png`;
   link.href = canvas.toDataURL("image/png");
   link.click();
-  pushAction("編集した写真を保存しました");
+  pushAction(`${activePhotoRatio}で写真を保存しました`);
 }
 
 function renderHistory() {
@@ -538,6 +575,9 @@ photoActionButtons.forEach((button) => {
       item.classList.toggle("active", item === button);
     });
     setEditorMode("photo");
+    if (button.dataset.photoRatio) {
+      setPhotoRatio(button.dataset.photoRatio);
+    }
     pushAction(`${button.dataset.photoAction}を調整したよ`);
   });
 });
@@ -634,5 +674,6 @@ routineForm.addEventListener("submit", (event) => {
 loadRoutines();
 renderHistory();
 renderRoutines();
+setPhotoRatio(activePhotoRatio);
 setEditorMode("video");
 switchView("home");
