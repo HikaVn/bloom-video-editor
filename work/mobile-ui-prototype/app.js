@@ -331,7 +331,7 @@ selectableCards.forEach((card) => {
 });
 
 document.querySelector(".search").addEventListener("click", () => {
-  setStatus("機能や素材を検索できるよ");
+  setStatus("テンプレートや素材を検索できるよ");
 });
 
 document.querySelector(".js-play").addEventListener("click", () => {

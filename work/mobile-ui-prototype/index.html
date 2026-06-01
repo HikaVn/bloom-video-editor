@@ -11,7 +11,7 @@
     <nav class="view-switcher" aria-label="画面切り替え">
       <button class="active" type="button" data-view-target="home">ホーム</button>
       <button type="button" data-view-target="editor">編集</button>
-      <button type="button" data-view-target="effects">機能</button>
+      <button type="button" data-view-target="effects">テンプレート</button>
     </nav>
 
     <section class="phone active" data-view="home" aria-label="Bloom home screen">
@@ -95,7 +95,7 @@
         <nav class="phone-nav" aria-label="home navigation">
           <button class="nav-item active" type="button" data-view-target="home"><span class="nav-ico">⌂</span><span>ホーム</span></button>
           <button class="nav-item" type="button" data-view-target="editor"><span class="nav-ico">◎</span><span>編集</span></button>
-          <button class="nav-item" type="button" data-view-target="effects"><span class="nav-ico">▦</span><span>機能</span></button>
+          <button class="nav-item" type="button" data-view-target="effects"><span class="nav-ico">▦</span><span>テンプレート</span></button>
         </nav>
       </div>
     </section>
@@ -189,22 +189,22 @@
           </div>
           <div class="screen">
             <nav class="catalog-tabs">
-              <button class="catalog-tab active" type="button" data-catalog-target="filters">基本</button>
+              <button class="catalog-tab active" type="button" data-catalog-target="filters">おすすめ</button>
               <button class="catalog-tab" type="button" data-catalog-target="stamps">見た目</button>
-              <button class="catalog-tab" type="button" data-catalog-target="grades">自動化</button>
+              <button class="catalog-tab" type="button" data-catalog-target="grades">自動作成</button>
               <button class="search" type="button" title="検索">⌕</button>
             </nav>
 
             <section class="catalog-section" data-catalog-section="filters">
               <div class="section-head">
-                <h2>基本機能</h2>
+                <h2>おすすめテンプレート</h2>
                 <button class="see-all" type="button">おすすめ ›</button>
               </div>
               <div class="filter-row">
-                <div class="filter-card active" role="button" tabindex="0" data-action-label="プロジェクト"><div class="filter-img feature-tile"><strong>Project</strong><small>作成/保存/一覧</small><span class="check">✓</span></div><span>プロジェクト</span></div>
-                <div class="filter-card" role="button" tabindex="0" data-action-label="素材読み込み"><div class="filter-img feature-tile"><strong>Import</strong><small>動画/画像/音声</small></div><span>素材読込</span></div>
-                <div class="filter-card" role="button" tabindex="0" data-action-label="プレビュー"><div class="filter-img feature-tile"><strong>Preview</strong><small>再生と確認</small></div><span>プレビュー</span></div>
-                <div class="filter-card" role="button" tabindex="0" data-action-label="書き出し"><div class="filter-img feature-tile"><strong>Export</strong><small>画質/保存先</small></div><span>書き出し</span></div>
+                <div class="filter-card active" role="button" tabindex="0" data-action-label="Vlogテンプレート"><div class="filter-img feature-tile"><strong>Vlog</strong><small>日常向け</small><span class="check">✓</span></div><span>Vlog</span></div>
+                <div class="filter-card" role="button" tabindex="0" data-action-label="旅行テンプレート"><div class="filter-img feature-tile"><strong>Travel</strong><small>思い出整理</small></div><span>旅行</span></div>
+                <div class="filter-card" role="button" tabindex="0" data-action-label="カフェテンプレート"><div class="filter-img feature-tile"><strong>Cafe</strong><small>淡色日記</small></div><span>カフェ</span></div>
+                <div class="filter-card" role="button" tabindex="0" data-action-label="美容テンプレート"><div class="filter-img feature-tile"><strong>Beauty</strong><small>補正つき</small></div><span>美容</span></div>
               </div>
             </section>
 
@@ -223,20 +223,20 @@
 
             <section class="catalog-section" data-catalog-section="titles">
               <div class="section-head">
-                <h2>編集機能</h2>
+                <h2>ジャンル別</h2>
                 <button class="see-all" type="button">すべて見る ›</button>
               </div>
               <div class="title-row">
-                <div class="title-card"><div class="title-art">Split<br><small>分割</small></div></div>
-                <div class="title-card"><div class="title-art peach">Text<br><small>字幕/タイトル</small></div></div>
-                <div class="title-card"><div class="title-art gray">BGM<br><small>おすすめ音楽</small></div></div>
-                <div class="title-card"><div class="title-art pink">Routine<br><small>再利用</small></div></div>
+                <div class="title-card"><div class="title-art">Daily<br><small>日常</small></div></div>
+                <div class="title-card"><div class="title-art peach">Birthday<br><small>誕生日</small></div></div>
+                <div class="title-card"><div class="title-art gray">Recipe<br><small>料理</small></div></div>
+                <div class="title-card"><div class="title-art pink">Routine<br><small>前回設定</small></div></div>
               </div>
             </section>
 
             <section class="catalog-section" data-catalog-section="grades">
               <div class="section-head">
-                <h2>自動化</h2>
+                <h2>自動作成</h2>
                 <button class="see-all" type="button">すべて見る ›</button>
               </div>
               <div class="grade-row">
@@ -250,10 +250,10 @@
         </div>
 
         <nav class="catalog-nav" aria-label="effect navigation">
-          <button class="nav-item active" type="button" data-view-target="effects"><span class="nav-ico">＋</span><span>基本</span></button>
+          <button class="nav-item active" type="button" data-view-target="effects"><span class="nav-ico">▣</span><span>おすすめ</span></button>
           <button class="nav-item" type="button"><span class="nav-ico">♡</span><span>見た目</span></button>
-          <button class="nav-item" type="button"><span class="nav-ico">◎</span><span>自動化</span></button>
-          <button class="nav-item" type="button"><span class="nav-ico">↻</span><span>再利用</span></button>
+          <button class="nav-item" type="button"><span class="nav-ico">◎</span><span>自動作成</span></button>
+          <button class="nav-item" type="button"><span class="nav-ico">♕</span><span>ジャンル</span></button>
           <button class="nav-item" type="button" data-view-target="editor"><span class="nav-ico">▤</span><span>編集へ</span></button>
         </nav>
       </div>
