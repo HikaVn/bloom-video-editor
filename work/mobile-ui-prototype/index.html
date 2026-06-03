@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icons/bloom-icon.svg" />
-  <link rel="stylesheet" href="styles.css?v=10" />
+  <link rel="stylesheet" href="styles.css?v=11" />
 </head>
 <body>
   <main class="stage">
@@ -85,6 +85,14 @@
                 <div class="template-item" data-start-mode="video" data-action-label="Beauty動画"><div class="template-icon">♡<span class="media-badge media-video" aria-label="動画"></span></div><span>Beauty動画</span></div>
                 <div class="template-item" data-start-mode="video" data-action-label="前回設定"><div class="template-icon">↻<span class="media-badge media-video" aria-label="動画"></span></div><span>前回設定</span></div>
               </div>
+            </section>
+
+            <section class="home-routines">
+              <div class="section-head">
+                <h2>わたしのルーチン</h2>
+                <button class="see-all" type="button" data-view-target="editor" data-action-label="ルーチン管理">管理する ›</button>
+              </div>
+              <div class="home-routine-list" aria-live="polite"></div>
             </section>
 
             <section>
@@ -368,7 +376,7 @@
   </div>
 
   <input class="media-input" type="file" accept="image/*,video/*" hidden />
-  <script src="app.js?v=10"></script>
+  <script src="app.js?v=11"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {

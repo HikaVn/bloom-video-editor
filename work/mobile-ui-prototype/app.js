@@ -44,6 +44,7 @@ const routineName = document.querySelector(".routine-name");
 const routineSave = document.querySelector(".routine-save");
 const routineList = document.querySelector(".routine-list");
 const routineCount = document.querySelector(".routine-count");
+const homeRoutineList = document.querySelector(".home-routine-list");
 const exportSheet = document.querySelector("[data-export-sheet]");
 const exportButton = document.querySelector(".js-export");
 const exportClose = document.querySelector(".sheet-close");
@@ -658,9 +659,45 @@ function summarizeActions(actions) {
   return actions.slice(0, 2).join(" / ");
 }
 
+function renderHomeRoutines() {
+  homeRoutineList.replaceChildren();
+
+  if (!routines.length) {
+    const emptyItem = document.createElement("div");
+    emptyItem.className = "home-routine-empty";
+    emptyItem.textContent = "編集画面で操作を保存すると、ここからすぐ使えます";
+    homeRoutineList.append(emptyItem);
+    return;
+  }
+
+  routines.slice(0, 2).forEach((routine) => {
+    const routineButton = document.createElement("button");
+    const routineIcon = document.createElement("span");
+    const routineText = document.createElement("span");
+    const routineTitle = document.createElement("strong");
+    const routineMeta = document.createElement("span");
+    const routineArrow = document.createElement("span");
+
+    routineButton.className = "home-routine-card";
+    routineButton.type = "button";
+    routineIcon.className = "home-routine-icon";
+    routineArrow.className = "home-routine-arrow";
+    routineIcon.textContent = "↻";
+    routineTitle.textContent = routine.name;
+    routineMeta.textContent = `${routine.actions.length}手順・${summarizeActions(routine.actions)}`;
+    routineArrow.textContent = "›";
+
+    routineText.append(routineTitle, routineMeta);
+    routineButton.append(routineIcon, routineText, routineArrow);
+    routineButton.addEventListener("click", () => applyRoutine(routine));
+    homeRoutineList.append(routineButton);
+  });
+}
+
 function renderRoutines() {
   routineList.replaceChildren();
   routineCount.textContent = `${routines.length}件`;
+  renderHomeRoutines();
 
   if (!routines.length) {
     const emptyItem = document.createElement("div");
@@ -671,22 +708,31 @@ function renderRoutines() {
   }
 
   routines.forEach((routine) => {
-    const routineButton = document.createElement("button");
+    const routineCard = document.createElement("div");
+    const applyButton = document.createElement("button");
+    const deleteButton = document.createElement("button");
     const routineText = document.createElement("span");
     const routineTitle = document.createElement("strong");
     const routineMeta = document.createElement("span");
     const routineIcon = document.createElement("em");
 
-    routineButton.className = "routine-card";
-    routineButton.type = "button";
+    routineCard.className = "routine-card";
+    applyButton.className = "routine-apply";
+    applyButton.type = "button";
+    deleteButton.className = "routine-delete";
+    deleteButton.type = "button";
+    deleteButton.setAttribute("aria-label", `${routine.name}を削除`);
     routineTitle.textContent = routine.name;
     routineMeta.textContent = `${routine.actions.length}手順・${summarizeActions(routine.actions)}`;
     routineIcon.textContent = "↻";
+    deleteButton.textContent = "×";
 
     routineText.append(routineTitle, routineMeta);
-    routineButton.append(routineText, routineIcon);
-    routineButton.addEventListener("click", () => applyRoutine(routine));
-    routineList.append(routineButton);
+    applyButton.append(routineText, routineIcon);
+    applyButton.addEventListener("click", () => applyRoutine(routine));
+    deleteButton.addEventListener("click", () => deleteRoutine(routine.id));
+    routineCard.append(applyButton, deleteButton);
+    routineList.append(routineCard);
   });
 }
 
@@ -722,6 +768,22 @@ function applyRoutine(routine) {
   redoLog.length = 0;
   setStatus(`「${routine.name}」をもう一度かけたよ`);
   renderHistory();
+  switchView("editor");
+}
+
+function deleteRoutine(routineId) {
+  const targetRoutine = routines.find((routine) => routine.id === routineId);
+  const previousRoutines = [...routines];
+  routines = routines.filter((routine) => routine.id !== routineId);
+
+  if (!saveRoutines()) {
+    routines = previousRoutines;
+    renderRoutines();
+    return;
+  }
+
+  renderRoutines();
+  setStatus(targetRoutine ? `「${targetRoutine.name}」を削除しました` : "ルーチンを削除しました");
 }
 
 function activateCatalogTab(tab) {
